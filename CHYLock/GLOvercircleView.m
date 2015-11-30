@@ -28,12 +28,12 @@ NSString *const solidCircleColor = @"#2A2A2A";
 - (void)drawRect:(CGRect)rect {
     _externRadius = self.frame.size.height - 2;
     _externSolidRadius = _externRadius / 3;
+    [self drawSolidCircle:rect color:[UIColor colorWithHexString:solidCircleColor alpha:1.0]];
     if ([self isTouched]) {
         [self drawLockViewWith:rect user:[UIColor colorWithHexString:externCircleColor alpha:1.0]];
-    }else if ([self isWrongUnlock]) {
+    }
+    if ([self isWrongUnlock]) {
         [self drawLockViewWith:rect user:[UIColor colorWithHexString:externCircleColorWrong alpha:1.0]];
-    }else{
-        [self drawSolidCircle:rect color:[UIColor colorWithHexString:solidCircleColor alpha:1.0]];
     }
 }
 
@@ -79,6 +79,6 @@ NSString *const solidCircleColor = @"#2A2A2A";
 }
 
 - (BOOL) isWrongUnlock{
-    return _isTouched;
+    return _isWrong;
 }
 @end

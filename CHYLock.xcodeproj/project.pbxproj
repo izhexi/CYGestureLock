@@ -16,6 +16,7 @@
 		EF0F72691BFC206100A99984 /* GLOvercircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F72681BFC206100A99984 /* GLOvercircleView.m */; };
 		EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */; };
 		EF0F727C1C04689200A99984 /* GLLockView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F727B1C04689200A99984 /* GLLockView.m */; };
+		EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4378721C0C4FBB009CB820 /* GLLockViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
 		EF0F727A1C04689200A99984 /* GLLockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockView.h; sourceTree = "<group>"; };
 		EF0F727B1C04689200A99984 /* GLLockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockView.m; sourceTree = "<group>"; };
+		EF4378711C0C4FBB009CB820 /* GLLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewController.h; sourceTree = "<group>"; };
+		EF4378721C0C4FBB009CB820 /* GLLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,8 @@
 				EF0F72501BFB61D400A99984 /* Supporting Files */,
 				EF0F727A1C04689200A99984 /* GLLockView.h */,
 				EF0F727B1C04689200A99984 /* GLLockView.m */,
+				EF4378711C0C4FBB009CB820 /* GLLockViewController.h */,
+				EF4378721C0C4FBB009CB820 /* GLLockViewController.m */,
 				EF0F72671BFC206100A99984 /* GLOvercircleView.h */,
 				EF0F72681BFC206100A99984 /* GLOvercircleView.m */,
 				EF0F726A1BFC50E600A99984 /* UIColor+HexColor.h */,
@@ -167,6 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF0F72581BFB61D400A99984 /* ViewController.m in Sources */,
+				EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */,
 				EF0F72691BFC206100A99984 /* GLOvercircleView.m in Sources */,
 				EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */,
 				EF0F72551BFB61D400A99984 /* AppDelegate.m in Sources */,
