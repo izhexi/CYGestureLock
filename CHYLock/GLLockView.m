@@ -105,7 +105,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
             if ([self existPasswordKey:@"hh"]) {
                 [self unLockPassword:CHYLockUnLockProcessFirst];
             } else {
-                self.lockType = CHYLockViewTypeSetting;
+                _lockType = CHYLockViewTypeSetting;
                 [self setPassword:CHYLockSettingProsessZero];
             }
         }
@@ -264,10 +264,6 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 }
 
 - (void) touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    GLLockViewItem *touchView = [self getTouchView:touches];
-    if (!touchView) {
-        return;
-    }
     [self judgementPasswordLength];
 }
 
@@ -279,9 +275,9 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 #pragma mark - 逻辑方法
 - (void) judgementPasswordLength{
     _isEndDraw = YES;
-    if (self.lockViews.count == 1) {
-        [self wrongDrawed:CHYLockDrawWrongTypeLength];
-    } else if (self.lockViews.count <4 && self.lockViews.count > 1) {
+    if (self.lockViews.count == 0) {
+
+    } else if (self.lockViews.count <4 && self.lockViews.count >= 1) {
         [self wrongDrawed:CHYLockDrawWrongTypeLength];
     } else {
         [self passDrawed];
@@ -444,7 +440,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
             break;
         case CHYLockUnLockProcessSecond:{
             if ([self isPassWordCorrect]) {
-                [USERCENTER setObject:@(-1) forKey:USERTRYCOUNTKEY];
+                _mistakes = -1;
+                [self saveMistakeNumber];
                 [self setShowSubTitle:@"解锁成功"];
                 NSLog(@"解锁成功");
                 [self doSuccessBlock];
@@ -468,6 +465,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
             break;
         case CHYLockModifyProsessSetting:
         {
+            _lockType = CHYLockViewTypeSetting;
             [self setPassword:CHYLockSettingProsessZero];
         }
             break;
@@ -486,6 +484,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
             break;
         case CHYLockClearProcessClear:{
             [USERCENTER removeObjectForKey:DEFAULTPAASWORDKEY];
+            [self setShowSubTitle:@"清除密码成功"];
             [self doSuccessBlock];
         }
             break;
@@ -500,7 +499,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 
 - (NSUInteger) getMistakeNumber{
     NSUInteger mistakesTime = [[USERCENTER objectForKey:USERTRYCOUNTKEY] integerValue];
-    if (mistakesTime == 0) {
+    if (mistakesTime <= 0) {
         mistakesTime = 1;
     }
     return mistakesTime;
@@ -582,11 +581,12 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 - (void) doFailedBlock{
     _mistakes = [self getMistakeNumber];
     [self setShowSubTitleColor:[UIColor redColor]];
-    [self setShowSubTitle:[NSString stringWithFormat:@"输入错误，剩余%ld次",5 - _mistakes]];
+    [self setShowSubTitle:[NSString stringWithFormat:@"绘制错误，剩余%ld次",5 - _mistakes]];
     [self saveMistakeNumber];
     if (_mistakes == 5) {
         [self doMaxWrongBlock];
         _mistakes = -1;
+        [self saveMistakeNumber];
         return;
     }
 }

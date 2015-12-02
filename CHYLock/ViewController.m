@@ -42,7 +42,8 @@
 - (IBAction)clearEvent:(id)sender {
     GLLockViewController *vc = [[GLLockViewController alloc]init];
     vc.lockType = CHYLockViewTypeClear;
-    [self.navigationController pushViewController:vc animated:YES];
+//    [self.navigationController pushViewController:vc animated:YES];
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
