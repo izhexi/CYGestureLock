@@ -13,7 +13,7 @@
 		EF0F725B1BFB61D400A99984 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF0F72591BFB61D400A99984 /* Main.storyboard */; };
 		EF0F725D1BFB61D400A99984 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF0F725C1BFB61D400A99984 /* Assets.xcassets */; };
 		EF0F72601BFB61D400A99984 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF0F725E1BFB61D400A99984 /* LaunchScreen.storyboard */; };
-		EF0F72691BFC206100A99984 /* GLOvercircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F72681BFC206100A99984 /* GLOvercircleView.m */; };
+		EF0F72691BFC206100A99984 /* GLLockViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F72681BFC206100A99984 /* GLLockViewItem.m */; };
 		EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */; };
 		EF0F727C1C04689200A99984 /* GLLockView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F727B1C04689200A99984 /* GLLockView.m */; };
 		EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4378721C0C4FBB009CB820 /* GLLockViewController.m */; };
@@ -30,8 +30,8 @@
 		EF0F725C1BFB61D400A99984 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF0F725F1BFB61D400A99984 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EF0F72611BFB61D400A99984 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EF0F72671BFC206100A99984 /* GLOvercircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLOvercircleView.h; sourceTree = "<group>"; };
-		EF0F72681BFC206100A99984 /* GLOvercircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLOvercircleView.m; sourceTree = "<group>"; };
+		EF0F72671BFC206100A99984 /* GLLockViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewItem.h; sourceTree = "<group>"; };
+		EF0F72681BFC206100A99984 /* GLLockViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewItem.m; sourceTree = "<group>"; };
 		EF0F726A1BFC50E600A99984 /* UIColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexColor.h"; sourceTree = "<group>"; };
 		EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
 		EF0F727A1C04689200A99984 /* GLLockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockView.h; sourceTree = "<group>"; };
@@ -79,12 +79,12 @@
 				EF0F725E1BFB61D400A99984 /* LaunchScreen.storyboard */,
 				EF0F72611BFB61D400A99984 /* Info.plist */,
 				EF0F72501BFB61D400A99984 /* Supporting Files */,
-				EF0F727A1C04689200A99984 /* GLLockView.h */,
-				EF0F727B1C04689200A99984 /* GLLockView.m */,
 				EF4378711C0C4FBB009CB820 /* GLLockViewController.h */,
 				EF4378721C0C4FBB009CB820 /* GLLockViewController.m */,
-				EF0F72671BFC206100A99984 /* GLOvercircleView.h */,
-				EF0F72681BFC206100A99984 /* GLOvercircleView.m */,
+				EF0F727A1C04689200A99984 /* GLLockView.h */,
+				EF0F727B1C04689200A99984 /* GLLockView.m */,
+				EF0F72671BFC206100A99984 /* GLLockViewItem.h */,
+				EF0F72681BFC206100A99984 /* GLLockViewItem.m */,
 				EF0F726A1BFC50E600A99984 /* UIColor+HexColor.h */,
 				EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */,
 			);
@@ -173,7 +173,7 @@
 			files = (
 				EF0F72581BFB61D400A99984 /* ViewController.m in Sources */,
 				EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */,
-				EF0F72691BFC206100A99984 /* GLOvercircleView.m in Sources */,
+				EF0F72691BFC206100A99984 /* GLLockViewItem.m in Sources */,
 				EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */,
 				EF0F72551BFB61D400A99984 /* AppDelegate.m in Sources */,
 				EF0F727C1C04689200A99984 /* GLLockView.m in Sources */,

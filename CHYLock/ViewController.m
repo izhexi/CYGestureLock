@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "GLLockView.h"
+#import "GLLockViewController.h"
 
 @interface ViewController ()
 
@@ -17,11 +17,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    GLLockView *glView = [[GLLockView alloc]initWithFrame:self.view.frame];//CGRectMake(100, 200, 300, 300)];
-    glView.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-    glView.backgroundColor = [UIColor lightGrayColor];
-    [self.view addSubview:glView];
+    
+//    GLLockView *glView = [[GLLockView alloc]initWithFrame:self.view.frame];//CGRectMake(100, 200, 300, 300)];
+//    glView.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+//    glView.lockType = CHYLockViewTypeUnlock;
+//    [self.view addSubview:glView];
     // Do any additional setup after loading the view, typically from a nib.
+}
+- (IBAction)modifyEvent:(id)sender {
+    GLLockViewController *vc = [[GLLockViewController alloc]init];
+    vc.lockType = CHYLockViewTypeModify;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (IBAction)setEvent:(id)sender {
+    GLLockViewController *vc = [[GLLockViewController alloc]init];
+    vc.lockType = CHYLockViewTypeSetting;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (IBAction)unlockEvent:(id)sender {
+    GLLockViewController *vc = [[GLLockViewController alloc]init];
+    vc.lockType = CHYLockViewTypeUnlock;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (IBAction)clearEvent:(id)sender {
+    GLLockViewController *vc = [[GLLockViewController alloc]init];
+    vc.lockType = CHYLockViewTypeClear;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

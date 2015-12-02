@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GLLockView.h"
 
 @interface GLLockViewController : UIViewController
-
+@property (nonatomic, assign) CHYLockViewType lockType;
 @end

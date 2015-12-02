@@ -1,5 +1,5 @@
 //
-//  GLOvercircleView.h
+//  GLLockViewItem.h
 //  CHYLock
 //
 //  Created by chenyun on 15/11/18.
@@ -28,7 +28,7 @@ extern NSString *const externCircleColor;
  */
 extern NSString *const externSolidColor;
 
-@interface GLOvercircleView : UIView
+@interface GLLockViewItem : UIView
 
 @property (nonatomic, copy) NSString *number;
 

@@ -9,13 +9,42 @@
 #import "GLLockView.h"
 #import "UIColor+HexColor.h"
 
-#define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
-#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
+#define SCREEN_WIDTH        [UIScreen mainScreen].bounds.size.width
+#define SCREEN_HEIGHT       [UIScreen mainScreen].bounds.size.height
 #define IS_Iphone4          (SCREEN_HEIGHT == 480)
 #define IS_Iphone5          (SCREEN_HEIGHT == 568)
 #define IS_Iphone6          (SCREEN_HEIGHT == 667)
 #define IS_Iphone6p         (SCREEN_HEIGHT == 736)
+#define USERCENTER          [NSUserDefaults standardUserDefaults]
+#define DEFAULTPAASWORDKEY  @"DefaultUserPassWordKey"
+#define USERTRYCOUNTKEY     @"UserTryCountKey"
 
+
+typedef NS_ENUM(NSUInteger, CHYLockSettingProsess) {
+    CHYLockSettingProsessZero = 1,
+    CHYLockSettingProsessFirst,
+    CHYLockSettingProsessSecond,
+};
+
+typedef NS_ENUM(NSUInteger, CHYLockDrawWrongType) {
+    CHYLockDrawWrongTypeLength = 1,
+    CHYLockDrawWrongTypePassword,
+};
+
+typedef NS_ENUM(NSUInteger, CHYLockModifyProsess) {
+    CHYLockModifyProsessUnlock = 1,
+    CHYLockModifyProsessSetting,
+};
+
+typedef NS_ENUM(NSUInteger, CHYLockClearProcess) {
+    CHYLockClearProcessUnlcok = 1,
+    CHYLockClearProcessClear,
+};
+
+typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
+    CHYLockUnLockProcessFirst = 1,
+    CHYLockUnLockProcessSecond,
+};
 @interface GLLockView()
 @property (nonatomic, strong) NSMutableArray *lockViews;
 @property (nonatomic, strong) UIImageView *showLogoImageView;
@@ -25,11 +54,16 @@
 @property (nonatomic, strong) UIView *topContenterView;
 @property (nonatomic, strong) UIView *bottomContenterView;
 @property (nonatomic, strong) NSMutableArray *lockviewSubVies;
+@property (nonatomic, assign) CHYLockSettingProsess settingProcess;
+@property (nonatomic, assign) CHYLockModifyProsess modifyProcess;
+@property (nonatomic, copy)   NSString *firstPassword;
 @end
 
 @implementation GLLockView{
     CGPoint _currentPoint;
     BOOL _isWrong;
+    BOOL _isEndDraw;
+    NSUInteger _mistakes;
 }
 
 - (NSMutableArray *) lockViews{
@@ -57,13 +91,42 @@
 
 #pragma mark - UI创建
 - (void)buildUI{
+    self.backgroundColor = [UIColor whiteColor];
     [self addTopContenterView];
     [self addBottomContentView];
+    switch (self.lockType) {
+        case CHYLockViewTypeSetting:
+        {
+            [self setPassword:CHYLockSettingProsessZero];
+        }
+            break;
+            
+        case CHYLockViewTypeUnlock:{
+            if ([self existPasswordKey:@"hh"]) {
+                [self unLockPassword:CHYLockUnLockProcessFirst];
+            } else {
+                self.lockType = CHYLockViewTypeSetting;
+                [self setPassword:CHYLockSettingProsessZero];
+            }
+        }
+            break;
+            
+        case CHYLockViewTypeModify:{
+            [self modifyPassword:CHYLockModifyProsessUnlock];
+        }
+            break;
+        case CHYLockViewTypeClear:{
+            [self clearPassword:CHYLockClearProcessUnlcok];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 - (void) addTopContenterView{
     self.topContenterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH,120)];
-    self.topContenterView.backgroundColor = [UIColor greenColor];
+    self.topContenterView.backgroundColor = [UIColor clearColor];
     CGPoint center =CGPointMake(SCREEN_WIDTH / 2, self.topContenterView.frame.size.height);
     self.topContenterView.center = center;
     [self addSubview:self.topContenterView];
@@ -75,7 +138,7 @@
 - (void) addBottomContentView{
     self.bottomContenterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
     CGPoint center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 40);
-    self.bottomContenterView.backgroundColor = [UIColor purpleColor];
+    self.bottomContenterView.backgroundColor = [UIColor clearColor];
     self.bottomContenterView.center = center;
     [self addSubview:self.bottomContenterView];
     [self addBottomButton];
@@ -120,13 +183,12 @@
     self.showSubTitleLabel.font = [UIFont systemFontOfSize:17.0];
     CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showTitleLabel.frame.origin.y  + self.showTitleLabel.frame.size.height + 10);
     self.showSubTitleLabel.center = center;
-    self.showSubTitleLabel.text = @"密码错误，还可以再输入4次";
     [self.topContenterView addSubview:self.showSubTitleLabel];
 }
 
 - (void) createCircle{
     for (NSUInteger i = 0; i < 9; i ++) {
-        GLOvercircleView *circleView = [[GLOvercircleView alloc]init];
+        GLLockViewItem *circleView = [[GLLockViewItem alloc]init];
         circleView.number = @(i).stringValue;
         circleView.backgroundColor = [UIColor clearColor];
         [self addSubview:circleView];
@@ -137,9 +199,9 @@
 - (void) layoutSubviews{
     [super layoutSubviews];
     for (NSUInteger i = 0; i < self.lockviewSubVies.count; i ++) {
-        CGFloat row = i / 3; //行
-        CGFloat col = i % 3; //列
-        GLOvercircleView *lockView = self.lockviewSubVies[i];
+        CGFloat row = i / 3;
+        CGFloat col = i % 3;
+        GLLockViewItem *lockView = self.lockviewSubVies[i];
         CGFloat marginX = 0;
         if (IS_Iphone4) {
             marginX = 20;
@@ -157,7 +219,7 @@
 - (void)drawRect:(CGRect)rect{
     CGContextRef cx = UIGraphicsGetCurrentContext();
     for (NSUInteger i = 0; i < self.lockViews.count; i ++) {
-        GLOvercircleView *view = self.lockViews[i];
+        GLLockViewItem *view = self.lockViews[i];
         if (i == 0) {
             CGContextMoveToPoint(cx, view.center.x, view.center.y);
         }
@@ -165,7 +227,9 @@
             CGContextAddLineToPoint(cx, view.center.x, view.center.y);
         }
     }
-    CGContextAddLineToPoint(cx, _currentPoint.x, _currentPoint.y);
+    if (!_isEndDraw) {
+        CGContextAddLineToPoint(cx, _currentPoint.x, _currentPoint.y);
+    }
     CGContextSetLineWidth(cx, 2.0);
     UIColor *color;
     if (_isWrong) {
@@ -180,38 +244,45 @@
 #pragma mark - 触摸事件
 - (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self cancleTouch];
-    GLOvercircleView *touchView = [self getTouchView:touches];
+    GLLockViewItem *touchView = [self getTouchView:touches];
     if (touchView && ![touchView isTouched]) {
         [touchView setTouched:YES];
         [touchView setNeedsDisplay];
-        [self addPassString:touchView];
+        [self addPasswordString:touchView];
     }
 }
 
 - (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    GLOvercircleView *touchView = [self getTouchView:touches];
+    GLLockViewItem *touchView = [self getTouchView:touches];
     _currentPoint = [touches.anyObject locationInView:self];
     [touchView setNeedsDisplay];
     if (![touchView isTouched] && touchView) {
         [touchView setTouched:YES];
-        [self addPassString:touchView];
+        [self addPasswordString:touchView];
     }
     [self setNeedsDisplay];
 }
 
 - (void) touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    GLLockViewItem *touchView = [self getTouchView:touches];
+    if (!touchView) {
+        return;
+    }
     [self judgementPasswordLength];
 }
 
 - (void) touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    GLOvercircleView *touchView = [self getTouchView:touches];
+    GLLockViewItem *touchView = [self getTouchView:touches];
     [touchView setTouched:NO];
 }
 
-#pragma mark - 功能方法
+#pragma mark - 逻辑方法
 - (void) judgementPasswordLength{
-    if (self.lockViews.count <4 && self.lockViews.count > 1) {
-        [self wrongDrawed];
+    _isEndDraw = YES;
+    if (self.lockViews.count == 1) {
+        [self wrongDrawed:CHYLockDrawWrongTypeLength];
+    } else if (self.lockViews.count <4 && self.lockViews.count > 1) {
+        [self wrongDrawed:CHYLockDrawWrongTypeLength];
     } else {
         [self passDrawed];
     }
@@ -222,9 +293,23 @@
     });
 }
 
-- (void) wrongDrawed{
+- (void) wrongDrawed:(CHYLockDrawWrongType)wrongType{
     _isWrong = YES;
-    for (GLOvercircleView *circleView in self.lockViews) {
+    [self setShowSubTitleColor:[UIColor redColor]];
+    switch (wrongType) {
+        case CHYLockDrawWrongTypeLength:
+        {
+            [self setShowSubTitle:@"绘制错误,至少绘制4个密码"];
+        }
+            break;
+        case CHYLockDrawWrongTypePassword:{
+            [self doFailedBlock];
+        }
+            break;
+        default:
+            break;
+    }
+    for (GLLockViewItem *circleView in self.lockViews) {
         [circleView setWrongUnlock:YES];
         [circleView setNeedsDisplay];
     }
@@ -234,12 +319,48 @@
 - (void) passDrawed{
     _isWrong = NO;
     [self setNeedsDisplay];
+    switch (self.lockType) {
+        case CHYLockViewTypeSetting:
+        {
+            self.settingProcess += 1;
+            [self setPassword:self.settingProcess];
+            if (self.settingProcess == CHYLockSettingProsessSecond) {
+                self.settingProcess = CHYLockSettingProsessZero;
+            }
+        }
+            break;
+            
+        case CHYLockViewTypeUnlock:{
+            [self unLockPassword:CHYLockUnLockProcessSecond];
+        }
+            break;
+        case CHYLockViewTypeModify:{
+            if ([self isPassWordCorrect]) {
+                NSLog(@"解锁成功");
+                [self modifyPassword:CHYLockModifyProsessSetting];
+            } else {
+                NSLog(@"解锁失败");
+                [self doFailedBlock];
+            }
+        }
+            break;
+        case CHYLockViewTypeClear:{
+            if ([self isPassWordCorrect]) {
+                [self clearPassword:CHYLockClearProcessClear];
+            } else {
+                [self doFailedBlock];
+            }
+        }
+            break;
+        default:
+            break;
+    }
 }
 
-- (GLOvercircleView *) getTouchView:(NSSet *)touches{
+- (GLLockViewItem *) getTouchView:(NSSet *)touches{
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    for (GLOvercircleView *view in self.lockviewSubVies) {
+    for (GLLockViewItem *view in self.lockviewSubVies) {
         if (CGRectContainsPoint(view.frame, touchPoint)) {
             return  view;
         }
@@ -250,20 +371,149 @@
 - (void) cancleTouch{
     [self.lockViews removeAllObjects];
     _isWrong = NO;
-    for (GLOvercircleView *view in self.lockviewSubVies) {
+    _isEndDraw = NO;
+    for (GLLockViewItem *view in self.lockviewSubVies) {
         [view setTouched:NO];
         [view setWrongUnlock:NO];
         [view setNeedsDisplay];
     }
 }
 
-- (void) addPassString:(UIView *)view{
+- (void) addPasswordString:(UIView *)view{
     [self.lockViews addObject:view];
     NSString *string = @"";
-    for (GLOvercircleView *aview in self.lockViews) {
+    for (GLLockViewItem *aview in self.lockViews) {
         string = [string stringByAppendingString:aview.number];
     }
     NSLog(@"%@ ",string);
+}
+
+- (NSString *) getCurrentPasswordString {
+    NSString *string = @"";
+    for (GLLockViewItem *aview in self.lockViews) {
+        string = [string stringByAppendingString:aview.number];
+    }
+    NSLog(@"%@ ",string);
+    return string;
+}
+
+- (BOOL) existPasswordKey:(NSString *)key{
+    return [[USERCENTER objectForKey:DEFAULTPAASWORDKEY] boolValue];
+}
+
+- (void) setPassword:(CHYLockSettingProsess)process{
+    self.settingProcess = process;
+    switch (process) {
+        case CHYLockSettingProsessZero:
+        {
+            [self setShowSubTitle:@"请绘制手势"];
+        }
+            break;
+        case CHYLockSettingProsessFirst:
+        {
+            [self setShowSubTitle:@"在绘制一遍，确认密码"];
+            self.firstPassword = [self getCurrentPasswordString];
+            
+        }
+            break;
+            
+        case CHYLockSettingProsessSecond:{
+            NSString *secondString = [self getCurrentPasswordString];
+            if ([self.firstPassword isEqualToString:secondString]) {
+                [self setShowSubTitle:@"设置成功"];
+                [USERCENTER setObject:secondString forKey:DEFAULTPAASWORDKEY];
+                [self doSuccessBlock];
+            } else {
+                [self setShowSubTitle:@"两次绘制不一致，请重新绘制"];
+                self.firstPassword = @"";
+                self.settingProcess = CHYLockSettingProsessZero;
+            }
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void) unLockPassword:(CHYLockUnLockProcess) process {
+    switch (process) {
+        case CHYLockUnLockProcessFirst:
+        {
+            NSLog(@"开始解锁");
+        }
+            break;
+        case CHYLockUnLockProcessSecond:{
+            if ([self isPassWordCorrect]) {
+                [USERCENTER setObject:@(-1) forKey:USERTRYCOUNTKEY];
+                [self setShowSubTitle:@"解锁成功"];
+                NSLog(@"解锁成功");
+                [self doSuccessBlock];
+            } else {
+                NSLog(@"解锁失败");
+                [self doFailedBlock];
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    
+}
+
+- (void) modifyPassword:(CHYLockModifyProsess)process {
+    switch (process) {
+        case CHYLockModifyProsessUnlock:{
+            [self setShowSubTitle:@"请绘制旧手势"];
+        }
+            break;
+        case CHYLockModifyProsessSetting:
+        {
+            [self setPassword:CHYLockSettingProsessZero];
+        }
+            break;
+        default:
+            break;
+    }
+    
+}
+
+- (void) clearPassword:(CHYLockClearProcess)process{
+    switch (process) {
+        case CHYLockClearProcessUnlcok:
+        {
+            [self setShowSubTitle:@"请绘制旧手势"];
+        }
+            break;
+        case CHYLockClearProcessClear:{
+            [USERCENTER removeObjectForKey:DEFAULTPAASWORDKEY];
+            [self doSuccessBlock];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (NSString *) getPassword {
+    return [USERCENTER objectForKey:DEFAULTPAASWORDKEY];
+}
+
+- (NSUInteger) getMistakeNumber{
+    NSUInteger mistakesTime = [[USERCENTER objectForKey:USERTRYCOUNTKEY] integerValue];
+    if (mistakesTime == 0) {
+        mistakesTime = 1;
+    }
+    return mistakesTime;
+}
+- (void) saveMistakeNumber{
+    [USERCENTER setObject:@(_mistakes + 1) forKey:USERTRYCOUNTKEY];
+}
+
+- (BOOL) isPassWordCorrect{
+    if ([[self getCurrentPasswordString] isEqualToString:[self getPassword]]) {
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark - setter
@@ -305,6 +555,11 @@
     }
 }
 
+- (void) setLockType:(CHYLockViewType)lockType{
+    _lockType = lockType;
+    [self buildUI];
+}
+
 - (void) showLogoByCircularMask:(BOOL)isShow{
     if (isShow) {
         [self.showLogoImageView.layer setCornerRadius:self.showLogoImageView.frame.size.width];
@@ -325,14 +580,26 @@
 }
 
 - (void) doFailedBlock{
-    if (self.unLockFailedBlock) {
-        self.unLockFailedBlock();
+    _mistakes = [self getMistakeNumber];
+    [self setShowSubTitleColor:[UIColor redColor]];
+    [self setShowSubTitle:[NSString stringWithFormat:@"输入错误，剩余%ld次",5 - _mistakes]];
+    [self saveMistakeNumber];
+    if (_mistakes == 5) {
+        [self doMaxWrongBlock];
+        _mistakes = -1;
+        return;
     }
 }
 
 - (void) doMaxWrongBlock{
     if (self.maxWrongBlock) {
         self.maxWrongBlock();
+    }
+}
+
+- (void) doForgotBlock{
+    if (self.forgotPasswordBlock) {
+        self.forgotPasswordBlock();
     }
 }
 

@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GLOvercircleView.h"
+#import "GLLockViewItem.h"
+
+typedef NS_ENUM(NSUInteger, CHYLockViewType) {
+    CHYLockViewTypeSetting = 1,
+    CHYLockViewTypeUnlock,
+    CHYLockViewTypeModify,
+    CHYLockViewTypeClear,
+};
 
 typedef void(^GLLockViewBlock)(void);
 @interface GLLockView : UIView
@@ -21,10 +28,11 @@ typedef void(^GLLockViewBlock)(void);
 @property (nonatomic, strong) UIView *bottomView;//默认为nil
 
 @property (nonatomic, copy) GLLockViewBlock unLockSuccessBlock;
-@property (nonatomic, copy) GLLockViewBlock unLockFailedBlock;
 @property (nonatomic, copy) GLLockViewBlock maxWrongBlock;
+@property (nonatomic, copy) GLLockViewBlock forgotPasswordBlock;
 
-+ (void)ShowLock;
+@property (nonatomic, assign) CHYLockViewType lockType;
+
 
 - (void)showLogoByCircularMask:(BOOL)isShow;
 

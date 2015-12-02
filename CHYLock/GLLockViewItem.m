@@ -1,12 +1,12 @@
 //
-//  GLOvercircleView.m
+//  GLLockViewItem.m
 //  CHYLock
 //
 //  Created by chenyun on 15/11/18.
 //  Copyright © 2015年 chenyun. All rights reserved.
 //
 
-#import "GLOvercircleView.h"
+#import "GLLockViewItem.h"
 #import "UIColor+HexColor.h"
 
 const CGFloat externRadius = 20.0;
@@ -17,7 +17,7 @@ NSString *const externCircleColor = @"#FFBD18";
 NSString *const externCircleColorWrong = @"#FF5A5A";
 NSString *const solidCircleColor = @"#2A2A2A";
 
-@implementation GLOvercircleView
+@implementation GLLockViewItem
 {
     BOOL _isTouched;
     BOOL _isWrong;
