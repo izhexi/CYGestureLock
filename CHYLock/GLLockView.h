@@ -30,7 +30,6 @@ typedef void(^GLLockViewBlock)(void);
 @property (nonatomic, copy) GLLockViewBlock unLockSuccessBlock;
 @property (nonatomic, copy) GLLockViewBlock maxWrongBlock;
 @property (nonatomic, copy) GLLockViewBlock forgotPasswordBlock;
-
 @property (nonatomic, assign) CHYLockViewType lockType;
 
 

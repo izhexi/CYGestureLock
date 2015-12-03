@@ -19,6 +19,17 @@
 #define DEFAULTPAASWORDKEY  @"DefaultUserPassWordKey"
 #define USERTRYCOUNTKEY     @"UserTryCountKey"
 
+NSString *const StartDraw = @"绘制解锁图案";
+
+NSString *const LengthWrong = @"至少连接4个点，请重新输入";
+
+NSString *const SecondDraw = @"在次绘制解锁图案";
+
+NSString *const Inconsisterncy = @"两次绘制不一致，请重新绘制";
+
+NSString *const CompleteDraw = @"设置完成";
+
+NSString *const ModifyDraw = @"请输入原手势密码";
 
 typedef NS_ENUM(NSUInteger, CHYLockSettingProsess) {
     CHYLockSettingProsessZero = 1,
@@ -45,6 +56,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     CHYLockUnLockProcessFirst = 1,
     CHYLockUnLockProcessSecond,
 };
+
 @interface GLLockView()
 @property (nonatomic, strong) NSMutableArray *lockViews;
 @property (nonatomic, strong) UIImageView *showLogoImageView;
@@ -172,14 +184,13 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     self.showTitleLabel.font = [UIFont systemFontOfSize:12.0];
     CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.bounds.size.height + 10);
     self.showTitleLabel.center = center;
-    self.showTitleLabel.text = @"188****8888";
     [self.topContenterView addSubview:self.showTitleLabel];
 }
 
 - (void) addSubTitleLabel{
     self.showSubTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH - 40, 30)];
     self.showSubTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.showSubTitleLabel.textColor = [UIColor colorWithHexString:@"2a2a2a" alpha:1.0];
+    self.showSubTitleLabel.textColor = [UIColor colorWithHexString:@"FF5A5A" alpha:1.0];
     self.showSubTitleLabel.font = [UIFont systemFontOfSize:17.0];
     CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showTitleLabel.frame.origin.y  + self.showTitleLabel.frame.size.height + 10);
     self.showSubTitleLabel.center = center;
@@ -247,8 +258,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     GLLockViewItem *touchView = [self getTouchView:touches];
     if (touchView && ![touchView isTouched]) {
         [touchView setTouched:YES];
-        [touchView setNeedsDisplay];
         [self addPasswordString:touchView];
+        [touchView setNeedsDisplay];
     }
 }
 
@@ -259,6 +270,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     if (![touchView isTouched] && touchView) {
         [touchView setTouched:YES];
         [self addPasswordString:touchView];
+        [touchView setNeedsDisplay];
     }
     [self setNeedsDisplay];
 }
@@ -280,10 +292,10 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     } else if (self.lockViews.count <4 && self.lockViews.count >= 1) {
         [self wrongDrawed:CHYLockDrawWrongTypeLength];
     } else {
-        [self passDrawed];
+        [self passedDraw];
     }
     __weak GLLockView *weakSelf = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self cancleTouch];
         [weakSelf setNeedsDisplay];
     });
@@ -295,7 +307,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     switch (wrongType) {
         case CHYLockDrawWrongTypeLength:
         {
-            [self setShowSubTitle:@"绘制错误,至少绘制4个密码"];
+            [self setShowSubTitle:LengthWrong];
         }
             break;
         case CHYLockDrawWrongTypePassword:{
@@ -312,7 +324,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     [self setNeedsDisplay];
 }
 
-- (void) passDrawed{
+- (void) passedDraw{
     _isWrong = NO;
     [self setNeedsDisplay];
     switch (self.lockType) {
@@ -371,17 +383,15 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     for (GLLockViewItem *view in self.lockviewSubVies) {
         [view setTouched:NO];
         [view setWrongUnlock:NO];
+        [view setDirect:0];
         [view setNeedsDisplay];
     }
 }
 
 - (void) addPasswordString:(UIView *)view{
     [self.lockViews addObject:view];
-    NSString *string = @"";
-    for (GLLockViewItem *aview in self.lockViews) {
-        string = [string stringByAppendingString:aview.number];
-    }
-    NSLog(@"%@ ",string);
+    [self calDirect];
+    NSLog(@"%@ ",[self getCurrentPasswordString]);
 }
 
 - (NSString *) getCurrentPasswordString {
@@ -402,12 +412,12 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     switch (process) {
         case CHYLockSettingProsessZero:
         {
-            [self setShowSubTitle:@"请绘制手势"];
+            [self setShowSubTitle:StartDraw];
         }
             break;
         case CHYLockSettingProsessFirst:
         {
-            [self setShowSubTitle:@"在绘制一遍，确认密码"];
+            [self setShowSubTitle:SecondDraw];
             self.firstPassword = [self getCurrentPasswordString];
             
         }
@@ -416,13 +426,12 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
         case CHYLockSettingProsessSecond:{
             NSString *secondString = [self getCurrentPasswordString];
             if ([self.firstPassword isEqualToString:secondString]) {
-                [self setShowSubTitle:@"设置成功"];
+                [self setShowSubTitle:CompleteDraw];
                 [USERCENTER setObject:secondString forKey:DEFAULTPAASWORDKEY];
                 [self doSuccessBlock];
             } else {
-                [self setShowSubTitle:@"两次绘制不一致，请重新绘制"];
-                self.firstPassword = @"";
-                self.settingProcess = CHYLockSettingProsessZero;
+                [self setShowSubTitle:Inconsisterncy];
+                self.settingProcess = CHYLockSettingProsessFirst;
             }
         }
             break;
@@ -479,7 +488,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     switch (process) {
         case CHYLockClearProcessUnlcok:
         {
-            [self setShowSubTitle:@"请绘制旧手势"];
+            [self setShowSubTitle:ModifyDraw];
         }
             break;
         case CHYLockClearProcessClear:{
@@ -513,6 +522,61 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
         return YES;
     }
     return NO;
+}
+
+-(void)calDirect{
+    
+    NSUInteger count = self.lockViews.count;
+    
+    if(self.lockViews ==nil || count<=1) return;
+    GLLockViewItem *item_1 = self.lockViews.lastObject;
+    GLLockViewItem *item_2 =self.lockViews[count -2];
+    
+    CGFloat item_1_x = item_1.frame.origin.x;
+    CGFloat item_1_y = item_1.frame.origin.y;
+    CGFloat item_2_x = item_2.frame.origin.x;
+    CGFloat item_2_y = item_2.frame.origin.y;
+    
+    //正上
+    if(item_2_x == item_1_x && item_2_y > item_1_y) {
+        item_2.direct = LockItemViewDirecTop;
+    }
+    
+    //正左
+    if(item_2_y == item_1_y && item_2_x > item_1_x) {
+        item_2.direct = LockItemViewDirecLeft;
+    }
+    
+    //正下
+    if(item_2_x == item_1_x && item_2_y < item_1_y) {
+        item_2.direct = LockItemViewDirecBottom;
+    }
+    
+    //正右
+    if(item_2_y == item_1_y && item_2_x < item_1_x) {
+        item_2.direct = LockItemViewDirecRight;
+    }
+    
+    //左上
+    if(item_2_x > item_1_x && item_2_y > item_1_y) {
+        item_2.direct = LockItemViewDirecLeftTop;
+    }
+    
+    //右上
+    if(item_2_x < item_1_x && item_2_y > item_1_y) {
+        item_2.direct = LockItemViewDirecRightTop;
+    }
+    
+    //左下
+    if(item_2_x > item_1_x && item_2_y < item_1_y) {
+        item_2.direct = LockItemViewDirecLeftBottom;
+    }
+    
+    //右下
+    if(item_2_x < item_1_x && item_2_y < item_1_y) {
+        item_2.direct = LockItemViewDiretRightBottom;
+    }
+    
 }
 
 #pragma mark - setter

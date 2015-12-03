@@ -8,29 +8,38 @@
 
 #import <UIKit/UIKit.h>
 
-/**
- *  外部圆半径
- */
-extern const CGFloat externRadius;
-
-/**
- *  内部实心圆半径
- */
-extern const CGFloat externSolidRadius;
-
-/**
- *  外部圆圈颜色
- */
-extern NSString *const externCircleColor;
-
-/**
- *  实心圆十六进制值
- */
-extern NSString *const externSolidColor;
+typedef enum {
+    
+    //正上
+    LockItemViewDirecTop = 1,
+    
+    //右上
+    LockItemViewDirecRightTop,
+    
+    //右
+    LockItemViewDirecRight,
+    
+    //右下
+    LockItemViewDiretRightBottom,
+    
+    //下
+    LockItemViewDirecBottom,
+    
+    //左下
+    LockItemViewDirecLeftBottom,
+    
+    //左
+    LockItemViewDirecLeft,
+    
+    //左上
+    LockItemViewDirecLeftTop,
+    
+}LockItemViewDirect;
 
 @interface GLLockViewItem : UIView
 
 @property (nonatomic, copy) NSString *number;
+@property (nonatomic, assign) LockItemViewDirect direct;
 
 - (void)setTouched:(BOOL)isTouched;
 

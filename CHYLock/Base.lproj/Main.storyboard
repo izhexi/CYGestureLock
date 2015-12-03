@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Slc-7N-jDm">
-                                <rect key="frame" x="122" y="206" width="77" height="36"/>
+                                <rect key="frame" x="122" y="195" width="77" height="36"/>
                                 <animations/>
                                 <state key="normal" title="设置密码"/>
                                 <connections>
@@ -26,7 +26,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sBd-FB-sff">
-                                <rect key="frame" x="122" y="260" width="77" height="30"/>
+                                <rect key="frame" x="122" y="249" width="77" height="30"/>
                                 <animations/>
                                 <state key="normal" title="解锁密码"/>
                                 <connections>
@@ -34,15 +34,15 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ob4-I4-nR9">
-                                <rect key="frame" x="122" y="315" width="77" height="30"/>
+                                <rect key="frame" x="122" y="304" width="77" height="30"/>
                                 <animations/>
-                                <state key="normal" title="清楚密码"/>
+                                <state key="normal" title="清除密码"/>
                                 <connections>
                                     <action selector="clearEvent:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ikE-hR-Alo"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5y6-lS-rNj">
-                                <rect key="frame" x="122" y="353" width="77" height="30"/>
+                                <rect key="frame" x="122" y="342" width="77" height="30"/>
                                 <animations/>
                                 <state key="normal" title="修改密码"/>
                                 <connections>

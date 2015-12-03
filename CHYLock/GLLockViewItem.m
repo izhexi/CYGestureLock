@@ -9,13 +9,11 @@
 #import "GLLockViewItem.h"
 #import "UIColor+HexColor.h"
 
-const CGFloat externRadius = 20.0;
-
-const CGFloat externSolidRadius = 10.0;
-
 NSString *const externCircleColor = @"#FFBD18";
 NSString *const externCircleColorWrong = @"#FF5A5A";
 NSString *const solidCircleColor = @"#2A2A2A";
+
+
 
 @implementation GLLockViewItem
 {
@@ -23,6 +21,7 @@ NSString *const solidCircleColor = @"#2A2A2A";
     BOOL _isWrong;
     CGFloat _externRadius;
     CGFloat _externSolidRadius;
+    CGFloat _angle;
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -41,16 +40,44 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGColorRef cgcolor = color.CGColor;
     CGContextRef cx = UIGraphicsGetCurrentContext();
     CGContextSaveGState(cx);
+    
+    CGFloat midX = CGRectGetMidX(rect);
+    CGFloat midY = CGRectGetMidY(rect);
+    CGContextTranslateCTM(cx, midX, midY);
+    CGContextRotateCTM(cx, _angle);
+    CGContextTranslateCTM(cx, -midX, -midY);
+    
     CGContextSetStrokeColorWithColor(cx,cgcolor);
     CGContextSetLineWidth(cx, 1.0);
     CGFloat centerX = rect.size.width / 2;
     CGFloat centerY = rect.size.height / 2;
     CGContextAddArc(cx,centerX, centerY, _externRadius / 2, 0, M_PI *2, 1);
     CGContextStrokePath(cx);
+    
     CGContextSetFillColorWithColor(cx,cgcolor);
     CGRect solidRect = CGRectMake(centerX - _externSolidRadius / 2, centerY -  _externSolidRadius / 2, _externSolidRadius, _externSolidRadius);
     CGContextFillEllipseInRect(cx, solidRect);
+    [self drawTriangleRect:rect color:[UIColor greenColor]];
     CGContextRestoreGState(cx);
+}
+
+- (void) drawTriangleRect:(CGRect )rect color:(UIColor *)color{
+    if (self.direct == 0) {
+        return;
+    }
+    CGContextRef cx = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(cx, color.CGColor);
+    CGFloat centerX = rect.size.width / 2;
+    CGFloat centerY = rect.size.height / 2;
+    CGPoint topPoint = CGPointMake(centerX, centerY - _externSolidRadius);
+    CGPoint leftPoint = CGPointMake(centerX - _externSolidRadius / 2 +5, centerY - 10);
+    CGPoint rightPoint = CGPointMake(centerX + _externSolidRadius / 2 -5, centerY - 10);
+    CGContextMoveToPoint(cx, topPoint.x, topPoint.y);
+    CGContextAddLineToPoint(cx, leftPoint.x, leftPoint.y);
+    CGContextAddLineToPoint(cx, rightPoint.x, rightPoint.y);
+        CGContextClosePath(cx);
+    CGContextFillPath(cx);
+
 }
 
 - (void) drawSolidCircle:(CGRect)rect color:(UIColor *)color{
@@ -64,6 +91,12 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGContextFillEllipseInRect(cx, solidRect);
     CGContextRestoreGState(cx);
 
+}
+
+- (void) setDirect:(LockItemViewDirect)direct{
+    _direct = direct;
+    _angle = M_PI_4 *(direct - 1);
+    [self setNeedsDisplay];
 }
 
 - (void) setTouched:(BOOL)isTouched{
