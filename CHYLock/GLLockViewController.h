@@ -15,21 +15,21 @@
 @property (nonatomic, copy) GLLockViewBlock maxWrongBlock;
 @property (nonatomic, copy) GLLockViewBlock forgotPasswordBlock;
 
-- (void) setShowTitle:(NSString *)showTitle;
++ (instancetype) LockViewControllerWithType:(CHYLockViewType)lockType;
 
-- (void) setShowSubTitle:(NSString *)showSubTitle;
++ (instancetype) LockViewControllerWithType:(CHYLockViewType)lockType forKey:(NSString *)key;
+
+- (void) addBackButton;
+
+- (void) setShowTitle:(NSString *)showTitle;
 
 - (void) setBottomTitle:(NSString *)bottomTitle;
 
 - (void) setShowTitleColor:(UIColor *)showTitleColor;
 
-- (void) setShowSubTitleColor:(UIColor *)showSubTitleColor;
-
 - (void) setBottomTitleColor:(UIColor *)bottomTitleColor;
 
 - (void) setBottomView:(UIView *)bottomView;
-
-- (void) setLockType:(CHYLockViewType)lockType;
 
 - (void) showLogoByCircularMask:(BOOL)isShow;
 

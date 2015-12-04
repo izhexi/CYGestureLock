@@ -19,6 +19,9 @@
 #define DEFAULTPAASWORDKEY  @"DefaultUserPassWordKey"
 #define USERTRYCOUNTKEY     @"UserTryCountKey"
 
+NSString *const CanResetNotice = @"GLLockViewResetNotice";
+NSString *const SetSuccessNotice = @"GLLockViewSetSuccessNotice";
+
 NSString *const StartDraw = @"绘制解锁图案";
 
 NSString *const LengthWrong = @"至少连接4个点，请重新输入";
@@ -31,10 +34,10 @@ NSString *const CompleteDraw = @"设置完成";
 
 NSString *const ModifyDraw = @"请输入原手势密码";
 
-typedef NS_ENUM(NSUInteger, CHYLockSettingProsess) {
-    CHYLockSettingProsessZero = 1,
-    CHYLockSettingProsessFirst,
-    CHYLockSettingProsessSecond,
+typedef NS_ENUM(NSUInteger, CHYLockSettingStep) {
+    CHYLockSettingStepZero = 1,
+    CHYLockSettingStepFirst,
+    CHYLockSettingStepSecond,
 };
 
 typedef NS_ENUM(NSUInteger, CHYLockDrawWrongType) {
@@ -42,19 +45,19 @@ typedef NS_ENUM(NSUInteger, CHYLockDrawWrongType) {
     CHYLockDrawWrongTypePassword,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockModifyProsess) {
-    CHYLockModifyProsessUnlock = 1,
-    CHYLockModifyProsessSetting,
+typedef NS_ENUM(NSUInteger, CHYLockModifyStep) {
+    CHYLockModifyStepUnlock = 1,
+    CHYLockModifyStepSetting,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockClearProcess) {
-    CHYLockClearProcessUnlcok = 1,
-    CHYLockClearProcessClear,
+typedef NS_ENUM(NSUInteger, CHYLockClearStep) {
+    CHYLockClearStepUnlcok = 1,
+    CHYLockClearStepClear,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
-    CHYLockUnLockProcessFirst = 1,
-    CHYLockUnLockProcessSecond,
+typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
+    CHYLockUnLockStepFirst = 1,
+    CHYLockUnLockStepSecond,
 };
 
 @interface GLLockView()
@@ -66,8 +69,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 @property (nonatomic, strong) UIView *topContenterView;
 @property (nonatomic, strong) UIView *bottomContenterView;
 @property (nonatomic, strong) NSMutableArray *lockviewSubVies;
-@property (nonatomic, assign) CHYLockSettingProsess settingProcess;
-@property (nonatomic, assign) CHYLockModifyProsess modifyProcess;
+@property (nonatomic, assign) CHYLockSettingStep settingStep;
+@property (nonatomic, assign) CHYLockModifyStep modifyStep;
 @property (nonatomic, copy)   NSString *firstPassword;
 @end
 
@@ -101,7 +104,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     return self;
 }
 
-#pragma mark - UI创建
+#pragma mark- UI创建
 - (void)buildUI{
     self.backgroundColor = [UIColor whiteColor];
     [self addTopContenterView];
@@ -109,26 +112,27 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     switch (self.lockType) {
         case CHYLockViewTypeSetting:
         {
-            [self setPassword:CHYLockSettingProsessZero];
+            [self setPassword:CHYLockSettingStepZero];
         }
             break;
             
         case CHYLockViewTypeUnlock:{
-            if ([self existPasswordKey:@"hh"]) {
-                [self unLockPassword:CHYLockUnLockProcessFirst];
+            NSString *lockKey = self.lockKey?self.lockKey:DEFAULTPAASWORDKEY;
+            if ([self existUserPasswordKey:lockKey]) {
+                [self unLockPassword:CHYLockUnLockStepFirst];
             } else {
                 _lockType = CHYLockViewTypeSetting;
-                [self setPassword:CHYLockSettingProsessZero];
+                [self setPassword:CHYLockSettingStepZero];
             }
         }
             break;
             
         case CHYLockViewTypeModify:{
-            [self modifyPassword:CHYLockModifyProsessUnlock];
+            [self modifyPassword:CHYLockModifyStepUnlock];
         }
             break;
         case CHYLockViewTypeClear:{
-            [self clearPassword:CHYLockClearProcessUnlcok];
+            [self clearPassword:CHYLockClearStepUnlcok];
         }
             break;
         default:
@@ -169,9 +173,9 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 }
 
 - (void) addLogoView{
-    self.showLogoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 80, 80)];
+    self.showLogoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.showLogoImageView.backgroundColor = [UIColor clearColor];
-    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.frame.size.height / 2);
+    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.frame.size.height / 2 +15);
     self.showLogoImageView.center = center;
     self.showLogoImageView.backgroundColor = [UIColor redColor];
     [self.topContenterView addSubview:self.showLogoImageView];
@@ -182,17 +186,18 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     self.showTitleLabel.textAlignment = NSTextAlignmentCenter;
     self.showTitleLabel.textColor = [UIColor colorWithHexString:@"2a2a2a" alpha:1.0];
     self.showTitleLabel.font = [UIFont systemFontOfSize:12.0];
-    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.bounds.size.height + 10);
+    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.bounds.size.height + 25);
     self.showTitleLabel.center = center;
+    [self setShowTitle:@"fdfdddfddd"];
     [self.topContenterView addSubview:self.showTitleLabel];
 }
 
 - (void) addSubTitleLabel{
     self.showSubTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH - 40, 30)];
     self.showSubTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.showSubTitleLabel.textColor = [UIColor colorWithHexString:@"FF5A5A" alpha:1.0];
+    self.showSubTitleLabel.textColor = [UIColor colorWithHexString:@"2a2a2a" alpha:1.0];
     self.showSubTitleLabel.font = [UIFont systemFontOfSize:17.0];
-    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showTitleLabel.frame.origin.y  + self.showTitleLabel.frame.size.height + 10);
+    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showTitleLabel.frame.origin.y  + self.showTitleLabel.frame.size.height + 20);
     self.showSubTitleLabel.center = center;
     [self.topContenterView addSubview:self.showSubTitleLabel];
 }
@@ -252,7 +257,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     CGContextStrokePath(cx);
 }
 
-#pragma mark - 触摸事件
+#pragma mark- 触摸事件
 - (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self cancleTouch];
     GLLockViewItem *touchView = [self getTouchView:touches];
@@ -284,7 +289,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     [touchView setTouched:NO];
 }
 
-#pragma mark - 逻辑方法
+#pragma mark- 逻辑方法
 - (void) judgementPasswordLength{
     _isEndDraw = YES;
     if (self.lockViews.count == 0) {
@@ -295,7 +300,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
         [self passedDraw];
     }
     __weak GLLockView *weakSelf = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self cancleTouch];
         [weakSelf setNeedsDisplay];
     });
@@ -308,6 +313,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
         case CHYLockDrawWrongTypeLength:
         {
             [self setShowSubTitle:LengthWrong];
+            [self shakeAnimation];
         }
             break;
         case CHYLockDrawWrongTypePassword:{
@@ -326,26 +332,27 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 
 - (void) passedDraw{
     _isWrong = NO;
+    [self setShowSubTitleColor:[UIColor blackColor]];
     [self setNeedsDisplay];
     switch (self.lockType) {
         case CHYLockViewTypeSetting:
         {
-            self.settingProcess += 1;
-            [self setPassword:self.settingProcess];
-            if (self.settingProcess == CHYLockSettingProsessSecond) {
-                self.settingProcess = CHYLockSettingProsessZero;
+            self.settingStep += 1;
+            [self setPassword:self.settingStep];
+            if (self.settingStep == CHYLockSettingStepSecond) {
+                self.settingStep = CHYLockSettingStepZero;
             }
         }
             break;
             
         case CHYLockViewTypeUnlock:{
-            [self unLockPassword:CHYLockUnLockProcessSecond];
+            [self unLockPassword:CHYLockUnLockStepSecond];
         }
             break;
         case CHYLockViewTypeModify:{
             if ([self isPassWordCorrect]) {
                 NSLog(@"解锁成功");
-                [self modifyPassword:CHYLockModifyProsessSetting];
+                [self modifyPassword:CHYLockModifyStepSetting];
             } else {
                 NSLog(@"解锁失败");
                 [self doFailedBlock];
@@ -354,7 +361,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
             break;
         case CHYLockViewTypeClear:{
             if ([self isPassWordCorrect]) {
-                [self clearPassword:CHYLockClearProcessClear];
+                [self clearPassword:CHYLockClearStepClear];
             } else {
                 [self doFailedBlock];
             }
@@ -390,7 +397,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 
 - (void) addPasswordString:(UIView *)view{
     [self.lockViews addObject:view];
-    [self calDirect];
+    [self calculateDirect];
     NSLog(@"%@ ",[self getCurrentPasswordString]);
 }
 
@@ -403,19 +410,15 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     return string;
 }
 
-- (BOOL) existPasswordKey:(NSString *)key{
-    return [[USERCENTER objectForKey:DEFAULTPAASWORDKEY] boolValue];
-}
-
-- (void) setPassword:(CHYLockSettingProsess)process{
-    self.settingProcess = process;
-    switch (process) {
-        case CHYLockSettingProsessZero:
+- (void) setPassword:(CHYLockSettingStep)step{
+    self.settingStep = step;
+    switch (step) {
+        case CHYLockSettingStepZero:
         {
             [self setShowSubTitle:StartDraw];
         }
             break;
-        case CHYLockSettingProsessFirst:
+        case CHYLockSettingStepFirst:
         {
             [self setShowSubTitle:SecondDraw];
             self.firstPassword = [self getCurrentPasswordString];
@@ -423,15 +426,18 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
         }
             break;
             
-        case CHYLockSettingProsessSecond:{
+        case CHYLockSettingStepSecond:{
             NSString *secondString = [self getCurrentPasswordString];
             if ([self.firstPassword isEqualToString:secondString]) {
                 [self setShowSubTitle:CompleteDraw];
                 [USERCENTER setObject:secondString forKey:DEFAULTPAASWORDKEY];
                 [self doSuccessBlock];
+                [[NSNotificationCenter defaultCenter]postNotificationName:SetSuccessNotice object:nil];
+
             } else {
                 [self setShowSubTitle:Inconsisterncy];
-                self.settingProcess = CHYLockSettingProsessFirst;
+                self.settingStep = CHYLockSettingStepFirst;
+                [[NSNotificationCenter defaultCenter]postNotificationName:CanResetNotice object:nil];
             }
         }
             break;
@@ -440,14 +446,14 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     }
 }
 
-- (void) unLockPassword:(CHYLockUnLockProcess) process {
-    switch (process) {
-        case CHYLockUnLockProcessFirst:
+- (void) unLockPassword:(CHYLockUnLockStep) step {
+    switch (step) {
+        case CHYLockUnLockStepFirst:
         {
             NSLog(@"开始解锁");
         }
             break;
-        case CHYLockUnLockProcessSecond:{
+        case CHYLockUnLockStepSecond:{
             if ([self isPassWordCorrect]) {
                 _mistakes = -1;
                 [self saveMistakeNumber];
@@ -466,16 +472,16 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     
 }
 
-- (void) modifyPassword:(CHYLockModifyProsess)process {
-    switch (process) {
-        case CHYLockModifyProsessUnlock:{
+- (void) modifyPassword:(CHYLockModifyStep)step {
+    switch (step) {
+        case CHYLockModifyStepUnlock:{
             [self setShowSubTitle:@"请绘制旧手势"];
         }
             break;
-        case CHYLockModifyProsessSetting:
+        case CHYLockModifyStepSetting:
         {
             _lockType = CHYLockViewTypeSetting;
-            [self setPassword:CHYLockSettingProsessZero];
+            [self setPassword:CHYLockSettingStepZero];
         }
             break;
         default:
@@ -484,15 +490,16 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     
 }
 
-- (void) clearPassword:(CHYLockClearProcess)process{
-    switch (process) {
-        case CHYLockClearProcessUnlcok:
+- (void) clearPassword:(CHYLockClearStep)step{
+    switch (step) {
+        case CHYLockClearStepUnlcok:
         {
             [self setShowSubTitle:ModifyDraw];
         }
             break;
-        case CHYLockClearProcessClear:{
-            [USERCENTER removeObjectForKey:DEFAULTPAASWORDKEY];
+        case CHYLockClearStepClear:{
+            NSString *lockKey = self.lockKey?self.lockKey:DEFAULTPAASWORDKEY;
+            [USERCENTER removeObjectForKey:lockKey];
             [self setShowSubTitle:@"清除密码成功"];
             [self doSuccessBlock];
         }
@@ -524,7 +531,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     return NO;
 }
 
--(void)calDirect{
+-(void)calculateDirect{
     
     NSUInteger count = self.lockViews.count;
     
@@ -579,14 +586,13 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     
 }
 
-#pragma mark - setter
+#pragma mark- setter
 - (void) setShowTitle:(NSString *)showTitle{
     _showTitle = showTitle;
     self.showTitleLabel.text = _showTitle;
 }
 
 - (void) setShowSubTitle:(NSString *)showSubTitle{
-    _showSubTitle = showSubTitle;
     self.showSubTitleLabel.text = showSubTitle;
 }
 
@@ -601,8 +607,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
 }
 
 - (void) setShowSubTitleColor:(UIColor *)showSubTitleColor{
-    _showSubTitleColor = showSubTitleColor;
-    [self.showSubTitleLabel setTextColor:_showSubTitleColor];
+    [self.showSubTitleLabel setTextColor:showSubTitleColor];
 }
 
 - (void) setBottomTitleColor:(UIColor *)bottomTitleColor{
@@ -623,6 +628,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     [self buildUI];
 }
 
+#pragma mark- Interface
 - (void) showLogoByCircularMask:(BOOL)isShow{
     if (isShow) {
         [self.showLogoImageView.layer setCornerRadius:self.showLogoImageView.frame.size.width];
@@ -631,7 +637,21 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     }
 }
 
-#pragma  mark - Actions
+- (BOOL) existUserPasswordKey:(NSString *)key{
+    return [[USERCENTER objectForKey:key] boolValue];
+}
+
+- (BOOL) existDefaultPasswordKey{
+    return [[USERCENTER objectForKey:DEFAULTPAASWORDKEY] boolValue];
+}
+
+- (void) resetSetting {
+    [self setShowSubTitle:StartDraw];
+    self.firstPassword = nil;
+    [self setPassword:CHYLockSettingStepZero];
+}
+
+#pragma  mark- Actions
 - (void) bottomButoonEvent:(id)sender{
     NSLog(@"First blood!");
 }
@@ -646,6 +666,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     _mistakes = [self getMistakeNumber];
     [self setShowSubTitleColor:[UIColor redColor]];
     [self setShowSubTitle:[NSString stringWithFormat:@"绘制错误，剩余%ld次",5 - _mistakes]];
+    [self shakeAnimation];
     [self saveMistakeNumber];
     if (_mistakes == 5) {
         [self doMaxWrongBlock];
@@ -667,4 +688,31 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockProcess) {
     }
 }
 
+#pragma mark- 动画
+- (void)shakeAnimation{
+    CGFloat centerX = self.showSubTitleLabel.center.x;
+    CGFloat centerY = self.showSubTitleLabel.center.y;
+    CGPoint left_1 = CGPointMake(centerX - 6, centerY);
+    CGPoint left_2 = CGPointMake(centerX - 4, centerY);
+    CGPoint left_3 = CGPointMake(centerX - 2, centerY);
+    CGPoint right_1 = CGPointMake(centerX + 6, centerY);
+    CGPoint right_2 = CGPointMake(centerX + 4, centerY);
+    CGPoint right_3 = CGPointMake(centerX + 2, centerY);
+    [NSValue valueWithCGPoint:left_1];
+    
+    NSArray *positions = @[[NSValue valueWithCGPoint:left_1],
+                           [NSValue valueWithCGPoint:left_2],
+                           [NSValue valueWithCGPoint:left_3],
+                           [NSValue valueWithCGPoint:right_1],
+                           [NSValue valueWithCGPoint:right_2],
+                           [NSValue valueWithCGPoint:right_3]
+];
+    
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    animation.values = positions;
+    animation.duration = .1;
+    animation.repeatCount = 2;
+    animation.removedOnCompletion = YES;
+    [self.showSubTitleLabel.layer addAnimation:animation forKey:@"shakeAnimtion"];
+}
 @end

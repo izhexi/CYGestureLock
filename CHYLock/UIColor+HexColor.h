@@ -11,4 +11,5 @@
 @interface UIColor (HexColor)
 
 + (instancetype)colorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha;
+
 @end
