@@ -1,6 +1,6 @@
 //
-//  GLLockView.m
-//  CHYLock
+//  CMGestureLockView.m
+//  CMGestureLock
 //
 //  Created by chenyun on 15/11/24.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -9,20 +9,10 @@
 #import "GLLockView.h"
 #import "UIColor+HexColor.h"
 
-#define SCREEN_WIDTH        [UIScreen mainScreen].bounds.size.width
-#define SCREEN_HEIGHT       [UIScreen mainScreen].bounds.size.height
-#define IS_Iphone4          (SCREEN_HEIGHT == 480)
-#define IS_Iphone5          (SCREEN_HEIGHT == 568)
-#define IS_Iphone6          (SCREEN_HEIGHT == 667)
-#define IS_Iphone6p         (SCREEN_HEIGHT == 736)
-#define USERCENTER          [NSUserDefaults standardUserDefaults]
-#define DEFAULTPAASWORDKEY  @"DefaultUserPassWordKey"
-#define USERTRYCOUNTKEY     @"UserTryCountKey"
-
 NSString *const CanResetNotice = @"GLLockViewResetNotice";
 NSString *const SetSuccessNotice = @"GLLockViewSetSuccessNotice";
 
-NSString *const StartDraw = @"绘制解锁图案";
+static NSString *StartDraw = @"绘制解锁图案";
 
 NSString *const LengthWrong = @"至少连接4个点，请重新输入";
 
@@ -34,105 +24,109 @@ NSString *const CompleteDraw = @"设置完成";
 
 NSString *const ModifyDraw = @"请输入原手势密码";
 
-typedef NS_ENUM(NSUInteger, CHYLockSettingStep) {
-    CHYLockSettingStepZero = 1,
-    CHYLockSettingStepFirst,
-    CHYLockSettingStepSecond,
+typedef NS_ENUM(NSUInteger, CMGestureLockSettingStep) {
+    CMGestureLockSettingStepZero = 1,
+    CMGestureLockSettingStepFirst,
+    CMGestureLockSettingStepSecond,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockDrawWrongType) {
-    CHYLockDrawWrongTypeLength = 1,
-    CHYLockDrawWrongTypePassword,
+typedef NS_ENUM(NSUInteger, CMGestureLockDrawWrongType) {
+    CMGestureLockDrawWrongTypeLength = 1,
+    CMGestureLockDrawWrongTypePassword,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockModifyStep) {
-    CHYLockModifyStepUnlock = 1,
-    CHYLockModifyStepSetting,
+typedef NS_ENUM(NSUInteger, CMGestureLockModifyStep) {
+    CMGestureLockModifyStepUnlock = 1,
+    CMGestureLockModifyStepSetting,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockClearStep) {
-    CHYLockClearStepUnlcok = 1,
-    CHYLockClearStepClear,
+typedef NS_ENUM(NSUInteger, CMGestureLockClearStep) {
+    CMGestureLockClearStepUnlcok = 1,
+    CMGestureLockClearStepClear,
 };
 
-typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
-    CHYLockUnLockStepFirst = 1,
-    CHYLockUnLockStepSecond,
+typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
+    CMGestureLockUnLockStepFirst = 1,
+    CMGestureLockUnLockStepSecond,
 };
 
-@interface GLLockView()
+@interface CMGestureLockView()
 @property (nonatomic, strong) NSMutableArray *lockViews;
-@property (nonatomic, strong) UIImageView *showLogoImageView;
+@property (nonatomic, strong) UIImageView *showAvatar;
 @property (nonatomic, strong) UILabel *showTitleLabel;
 @property (nonatomic, strong) UILabel *showSubTitleLabel;
 @property (nonatomic, strong) UIButton *showBottomButton;
 @property (nonatomic, strong) UIView *topContenterView;
 @property (nonatomic, strong) UIView *bottomContenterView;
 @property (nonatomic, strong) NSMutableArray *lockviewSubVies;
-@property (nonatomic, assign) CHYLockSettingStep settingStep;
-@property (nonatomic, assign) CHYLockModifyStep modifyStep;
+@property (nonatomic, assign) CMGestureLockSettingStep settingStep;
+@property (nonatomic, assign) CMGestureLockModifyStep modifyStep;
 @property (nonatomic, copy)   NSString *firstPassword;
 @end
 
-@implementation GLLockView{
+@implementation CMGestureLockView
+{
     CGPoint _currentPoint;
     BOOL _isWrong;
     BOOL _isEndDraw;
     NSUInteger _mistakes;
 }
 
-- (NSMutableArray *) lockViews{
+- (NSMutableArray *) lockViews
+{
     if (!_lockViews) {
         _lockViews = [[NSMutableArray alloc]init];
     }
     return _lockViews;
 }
 
-- (NSMutableArray *)lockviewSubVies{
+- (NSMutableArray *)lockviewSubVies
+{
     if (!_lockviewSubVies) {
         _lockviewSubVies = [NSMutableArray array];
     }
     return _lockviewSubVies;
 }
 
-- (instancetype) initWithFrame:(CGRect)frame{
+- (instancetype) initWithFrame:(CGRect)frame
+{
     self = [super initWithFrame:frame];
     if (self) {
         [self createCircle];
-        [self buildUI];
+        //        [self buildUI];
     }
     return self;
 }
 
 #pragma mark- UI创建
-- (void)buildUI{
+- (void)buildUI
+{
     self.backgroundColor = [UIColor whiteColor];
     [self addTopContenterView];
     [self addBottomContentView];
     switch (self.lockType) {
-        case CHYLockViewTypeSetting:
+        case CMGestureLockViewTypeSetting:
         {
-            [self setPassword:CHYLockSettingStepZero];
+            [self setPassword:CMGestureLockSettingStepZero];
         }
             break;
             
-        case CHYLockViewTypeUnlock:{
-            NSString *lockKey = self.lockKey?self.lockKey:DEFAULTPAASWORDKEY;
-            if ([self existUserPasswordKey:lockKey]) {
-                [self unLockPassword:CHYLockUnLockStepFirst];
+        case CMGestureLockViewTypeUnlock:{
+            if ([self existDefaultPasswordKey]) {
+                [self unLockPassword:CMGestureLockUnLockStepFirst];
             } else {
-                _lockType = CHYLockViewTypeSetting;
-                [self setPassword:CHYLockSettingStepZero];
+                _lockType = CMGestureLockViewTypeSetting;
+                [self setPassword:CMGestureLockSettingStepZero];
             }
         }
             break;
             
-        case CHYLockViewTypeModify:{
-            [self modifyPassword:CHYLockModifyStepUnlock];
+        case CMGestureLockViewTypeModify:{
+            [self modifyPassword:CMGestureLockModifyStepUnlock];
         }
             break;
-        case CHYLockViewTypeClear:{
-            [self clearPassword:CHYLockClearStepUnlcok];
+        case CMGestureLockViewTypeClear:{
+            [self clearPassword:CMGestureLockClearStepUnlcok];
         }
             break;
         default:
@@ -140,18 +134,20 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) addTopContenterView{
+- (void) addTopContenterView
+{
     self.topContenterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH,120)];
     self.topContenterView.backgroundColor = [UIColor clearColor];
     CGPoint center =CGPointMake(SCREEN_WIDTH / 2, self.topContenterView.frame.size.height);
     self.topContenterView.center = center;
     [self addSubview:self.topContenterView];
-    [self addLogoView];
+    [self addAvatarView];
     [self addTitleLable];
     [self addSubTitleLabel];
 }
 
-- (void) addBottomContentView{
+- (void) addBottomContentView
+{
     self.bottomContenterView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
     CGPoint center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 40);
     self.bottomContenterView.backgroundColor = [UIColor clearColor];
@@ -160,7 +156,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     [self addBottomButton];
 }
 
-- (void) addBottomButton{
+- (void) addBottomButton
+{
     self.showBottomButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 120, 44)];
     self.showBottomButton.backgroundColor = [UIColor clearColor];
     [self.showBottomButton setTitle:@"管理手势密码" forState:UIControlStateNormal];
@@ -172,52 +169,60 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     [self.bottomContenterView addSubview:self.showBottomButton];
 }
 
-- (void) addLogoView{
-    self.showLogoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
-    self.showLogoImageView.backgroundColor = [UIColor clearColor];
-    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.frame.size.height / 2 +15);
-    self.showLogoImageView.center = center;
-    self.showLogoImageView.backgroundColor = [UIColor redColor];
-    [self.topContenterView addSubview:self.showLogoImageView];
+- (void) addAvatarView
+{
+    self.showAvatar = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
+    self.showAvatar.backgroundColor = [UIColor clearColor];
+    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showAvatar.frame.size.height / 2 +15);
+    self.showAvatar.center = center;
+    self.showAvatar.backgroundColor = [UIColor redColor];
+    [self.topContenterView addSubview:self.showAvatar];
+    self.showAvatar.clipsToBounds = YES;
 }
 
-- (void) addTitleLable{
+- (void) addTitleLable
+{
     self.showTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH/2, 21)];
     self.showTitleLabel.textAlignment = NSTextAlignmentCenter;
     self.showTitleLabel.textColor = [UIColor colorWithHexString:@"2a2a2a" alpha:1.0];
     self.showTitleLabel.font = [UIFont systemFontOfSize:12.0];
-    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showLogoImageView.bounds.size.height + 25);
+    CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showAvatar.bounds.size.height + 25);
     self.showTitleLabel.center = center;
-    [self setShowTitle:@"fdfdddfddd"];
     [self.topContenterView addSubview:self.showTitleLabel];
 }
 
-- (void) addSubTitleLabel{
-    self.showSubTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH - 40, 30)];
+- (void) addSubTitleLabel
+{
+    self.showSubTitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH - 40, 44)];
     self.showSubTitleLabel.textAlignment = NSTextAlignmentCenter;
     self.showSubTitleLabel.textColor = [UIColor colorWithHexString:@"2a2a2a" alpha:1.0];
     self.showSubTitleLabel.font = [UIFont systemFontOfSize:17.0];
+    [self.showSubTitleLabel setAdjustsFontSizeToFitWidth:YES];
+    [self.showSubTitleLabel setLineBreakMode:NSLineBreakByCharWrapping];
+    self.showSubTitleLabel.numberOfLines = 0;
     CGPoint center = CGPointMake(self.topContenterView.bounds.size.width / 2, self.showTitleLabel.frame.origin.y  + self.showTitleLabel.frame.size.height + 20);
     self.showSubTitleLabel.center = center;
     [self.topContenterView addSubview:self.showSubTitleLabel];
 }
 
-- (void) createCircle{
+- (void) createCircle
+{
     for (NSUInteger i = 0; i < 9; i ++) {
-        GLLockViewItem *circleView = [[GLLockViewItem alloc]init];
-        circleView.number = @(i).stringValue;
+        CMGestureLockViewItem *circleView = [[CMGestureLockViewItem alloc]init];
+        circleView.number = @(i+1).stringValue;
         circleView.backgroundColor = [UIColor clearColor];
         [self addSubview:circleView];
         [self.lockviewSubVies addObject:circleView];
     }
 }
 
-- (void) layoutSubviews{
+- (void) layoutSubviews
+{
     [super layoutSubviews];
     for (NSUInteger i = 0; i < self.lockviewSubVies.count; i ++) {
         CGFloat row = i / 3;
         CGFloat col = i % 3;
-        GLLockViewItem *lockView = self.lockviewSubVies[i];
+        CMGestureLockViewItem *lockView = self.lockviewSubVies[i];
         CGFloat marginX = 0;
         if (IS_Iphone4) {
             marginX = 20;
@@ -232,10 +237,11 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void)drawRect:(CGRect)rect{
+- (void)drawRect:(CGRect)rect
+{
     CGContextRef cx = UIGraphicsGetCurrentContext();
     for (NSUInteger i = 0; i < self.lockViews.count; i ++) {
-        GLLockViewItem *view = self.lockViews[i];
+        CMGestureLockViewItem *view = self.lockViews[i];
         if (i == 0) {
             CGContextMoveToPoint(cx, view.center.x, view.center.y);
         }
@@ -258,9 +264,10 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
 }
 
 #pragma mark- 触摸事件
-- (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
     [self cancleTouch];
-    GLLockViewItem *touchView = [self getTouchView:touches];
+    CMGestureLockViewItem *touchView = [self getTouchView:touches];
     if (touchView && ![touchView isTouched]) {
         [touchView setTouched:YES];
         [self addPasswordString:touchView];
@@ -268,8 +275,9 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    GLLockViewItem *touchView = [self getTouchView:touches];
+- (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    CMGestureLockViewItem *touchView = [self getTouchView:touches];
     _currentPoint = [touches.anyObject locationInView:self];
     [touchView setNeedsDisplay];
     if (![touchView isTouched] && touchView) {
@@ -280,88 +288,93 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     [self setNeedsDisplay];
 }
 
-- (void) touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void) touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
     [self judgementPasswordLength];
 }
 
-- (void) touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    GLLockViewItem *touchView = [self getTouchView:touches];
+- (void) touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    CMGestureLockViewItem *touchView = [self getTouchView:touches];
     [touchView setTouched:NO];
 }
 
 #pragma mark- 逻辑方法
-- (void) judgementPasswordLength{
+- (void) judgementPasswordLength
+{
     _isEndDraw = YES;
     if (self.lockViews.count == 0) {
-
+        
     } else if (self.lockViews.count <4 && self.lockViews.count >= 1) {
-        [self wrongDrawed:CHYLockDrawWrongTypeLength];
+        [self wrongDrawed:CMGestureLockDrawWrongTypeLength];
     } else {
         [self passedDraw];
     }
-    __weak GLLockView *weakSelf = self;
+    __weak CMGestureLockView *weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self cancleTouch];
         [weakSelf setNeedsDisplay];
     });
 }
 
-- (void) wrongDrawed:(CHYLockDrawWrongType)wrongType{
+- (void) wrongDrawed:(CMGestureLockDrawWrongType)wrongType
+{
     _isWrong = YES;
     [self setShowSubTitleColor:[UIColor redColor]];
     switch (wrongType) {
-        case CHYLockDrawWrongTypeLength:
+        case CMGestureLockDrawWrongTypeLength:
         {
             [self setShowSubTitle:LengthWrong];
             [self shakeAnimation];
         }
             break;
-        case CHYLockDrawWrongTypePassword:{
+        case CMGestureLockDrawWrongTypePassword:{
             [self doFailedBlock];
         }
             break;
         default:
             break;
     }
-    for (GLLockViewItem *circleView in self.lockViews) {
+    for (CMGestureLockViewItem *circleView in self.lockViews) {
         [circleView setWrongUnlock:YES];
         [circleView setNeedsDisplay];
     }
     [self setNeedsDisplay];
 }
 
-- (void) passedDraw{
+- (void) passedDraw
+{
     _isWrong = NO;
     [self setShowSubTitleColor:[UIColor blackColor]];
     [self setNeedsDisplay];
     switch (self.lockType) {
-        case CHYLockViewTypeSetting:
+        case CMGestureLockViewTypeSetting:
         {
             self.settingStep += 1;
             [self setPassword:self.settingStep];
-            if (self.settingStep == CHYLockSettingStepSecond) {
-                self.settingStep = CHYLockSettingStepZero;
+            if (self.settingStep == CMGestureLockSettingStepSecond) {
+                self.settingStep = CMGestureLockSettingStepZero;
             }
         }
             break;
             
-        case CHYLockViewTypeUnlock:{
-            [self unLockPassword:CHYLockUnLockStepSecond];
+        case CMGestureLockViewTypeUnlock:{
+            [self unLockPassword:CMGestureLockUnLockStepSecond];
         }
             break;
-        case CHYLockViewTypeModify:{
+        case CMGestureLockViewTypeModify:{
             if ([self isPassWordCorrect]) {
                 NSLog(@"解锁成功");
-                [self modifyPassword:CHYLockModifyStepSetting];
+                [self modifyPassword:CMGestureLockModifyStepSetting];
             } else {
                 NSLog(@"解锁失败");
                 [self doFailedBlock];
             }
         }
             break;
-        case CHYLockViewTypeClear:{
+        case CMGestureLockViewTypeClear:{
             if ([self isPassWordCorrect]) {
-                [self clearPassword:CHYLockClearStepClear];
+                [self clearPassword:CMGestureLockClearStepClear];
             } else {
                 [self doFailedBlock];
             }
@@ -372,10 +385,11 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (GLLockViewItem *) getTouchView:(NSSet *)touches{
+- (CMGestureLockViewItem *) getTouchView:(NSSet *)touches
+{
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    for (GLLockViewItem *view in self.lockviewSubVies) {
+    for (CMGestureLockViewItem *view in self.lockviewSubVies) {
         if (CGRectContainsPoint(view.frame, touchPoint)) {
             return  view;
         }
@@ -383,11 +397,12 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     return nil;
 }
 
-- (void) cancleTouch{
+- (void) cancleTouch
+{
     [self.lockViews removeAllObjects];
     _isWrong = NO;
     _isEndDraw = NO;
-    for (GLLockViewItem *view in self.lockviewSubVies) {
+    for (CMGestureLockViewItem *view in self.lockviewSubVies) {
         [view setTouched:NO];
         [view setWrongUnlock:NO];
         [view setDirect:0];
@@ -395,30 +410,60 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) addPasswordString:(UIView *)view{
+- (void) addPasswordString:(UIView *)view
+{
     [self.lockViews addObject:view];
     [self calculateDirect];
     NSLog(@"%@ ",[self getCurrentPasswordString]);
 }
 
-- (NSString *) getCurrentPasswordString {
+- (NSString *) getCurrentPasswordString
+{
     NSString *string = @"";
-    for (GLLockViewItem *aview in self.lockViews) {
+    for (CMGestureLockViewItem *aview in self.lockViews) {
         string = [string stringByAppendingString:aview.number];
     }
     NSLog(@"%@ ",string);
     return string;
 }
 
-- (void) setPassword:(CHYLockSettingStep)step{
+- (void) savePassword:(NSString *)password
+{
+    if ([self.delegate respondsToSelector:@selector(encryptPassword:)]) {
+        NSString *pswd = [self.delegate encryptPassword:password];
+        if (pswd) {
+            [USERDEFAULT setObject:pswd forKey:UDKey_GesturePassword];
+        }
+    } else {
+        [USERDEFAULT setObject:password forKey:UDKey_GesturePassword];
+
+    }
+}
+
+- (NSString *) getPassword
+{
+    NSString *pswd = [USERDEFAULT objectForKey:UDKey_GesturePassword];
+    if ([self.delegate respondsToSelector:@selector(decryptPassword:)]) {
+        pswd = [self.delegate decryptPassword:pswd];
+        if (pswd) {
+            return pswd;
+        }
+        return nil;
+    }
+    return pswd;
+}
+
+#pragma mark- 解锁
+- (void) setPassword:(CMGestureLockSettingStep)step
+{
     self.settingStep = step;
     switch (step) {
-        case CHYLockSettingStepZero:
+        case CMGestureLockSettingStepZero:
         {
             [self setShowSubTitle:StartDraw];
         }
             break;
-        case CHYLockSettingStepFirst:
+        case CMGestureLockSettingStepFirst:
         {
             [self setShowSubTitle:SecondDraw];
             self.firstPassword = [self getCurrentPasswordString];
@@ -426,17 +471,17 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
         }
             break;
             
-        case CHYLockSettingStepSecond:{
+        case CMGestureLockSettingStepSecond:{
             NSString *secondString = [self getCurrentPasswordString];
             if ([self.firstPassword isEqualToString:secondString]) {
                 [self setShowSubTitle:CompleteDraw];
-                [USERCENTER setObject:secondString forKey:DEFAULTPAASWORDKEY];
+                [self savePassword:secondString];
                 [self doSuccessBlock];
                 [[NSNotificationCenter defaultCenter]postNotificationName:SetSuccessNotice object:nil];
-
+                
             } else {
                 [self setShowSubTitle:Inconsisterncy];
-                self.settingStep = CHYLockSettingStepFirst;
+                self.settingStep = CMGestureLockSettingStepFirst;
                 [[NSNotificationCenter defaultCenter]postNotificationName:CanResetNotice object:nil];
             }
         }
@@ -446,14 +491,18 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) unLockPassword:(CHYLockUnLockStep) step {
+- (void) unLockPassword:(CMGestureLockUnLockStep)step
+{
     switch (step) {
-        case CHYLockUnLockStepFirst:
+        case CMGestureLockUnLockStepFirst:
         {
+            self.showAvatar.transform = CGAffineTransformIdentity;
+            self.showAvatar.transform = CGAffineTransformScale(self.showSubTitleLabel.transform, 1.2, 1.2);
+            self.showTitleLabel.alpha = 0;
             NSLog(@"开始解锁");
         }
             break;
-        case CHYLockUnLockStepSecond:{
+        case CMGestureLockUnLockStepSecond:{
             if ([self isPassWordCorrect]) {
                 _mistakes = -1;
                 [self saveMistakeNumber];
@@ -462,7 +511,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
                 [self doSuccessBlock];
             } else {
                 NSLog(@"解锁失败");
-                [self doFailedBlock];
+                [self addAnimationForShowAvatar];
+                [self wrongDrawed:CMGestureLockDrawWrongTypePassword];
             }
         }
             break;
@@ -472,16 +522,17 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     
 }
 
-- (void) modifyPassword:(CHYLockModifyStep)step {
+- (void) modifyPassword:(CMGestureLockModifyStep)step
+{
     switch (step) {
-        case CHYLockModifyStepUnlock:{
+        case CMGestureLockModifyStepUnlock:{
             [self setShowSubTitle:@"请绘制旧手势"];
         }
             break;
-        case CHYLockModifyStepSetting:
+        case CMGestureLockModifyStepSetting:
         {
-            _lockType = CHYLockViewTypeSetting;
-            [self setPassword:CHYLockSettingStepZero];
+            _lockType = CMGestureLockViewTypeSetting;
+            [self setPassword:CMGestureLockSettingStepZero];
         }
             break;
         default:
@@ -490,16 +541,16 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     
 }
 
-- (void) clearPassword:(CHYLockClearStep)step{
+- (void) clearPassword:(CMGestureLockClearStep)step
+{
     switch (step) {
-        case CHYLockClearStepUnlcok:
+        case CMGestureLockClearStepUnlcok:
         {
             [self setShowSubTitle:ModifyDraw];
         }
             break;
-        case CHYLockClearStepClear:{
-            NSString *lockKey = self.lockKey?self.lockKey:DEFAULTPAASWORDKEY;
-            [USERCENTER removeObjectForKey:lockKey];
+        case CMGestureLockClearStepClear:{
+            [USERDEFAULT removeObjectForKey:UDKey_GesturePassword];
             [self setShowSubTitle:@"清除密码成功"];
             [self doSuccessBlock];
         }
@@ -509,35 +560,37 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (NSString *) getPassword {
-    return [USERCENTER objectForKey:DEFAULTPAASWORDKEY];
-}
-
-- (NSUInteger) getMistakeNumber{
-    NSUInteger mistakesTime = [[USERCENTER objectForKey:USERTRYCOUNTKEY] integerValue];
+#pragma mark- 辅助方法
+- (NSUInteger) getMistakeNumber
+{
+    NSUInteger mistakesTime = [[USERDEFAULT objectForKey:USERTRYCOUNTKEY] integerValue];
     if (mistakesTime <= 0) {
         mistakesTime = 1;
     }
     return mistakesTime;
 }
-- (void) saveMistakeNumber{
-    [USERCENTER setObject:@(_mistakes + 1) forKey:USERTRYCOUNTKEY];
+
+- (void) saveMistakeNumber
+{
+    [USERDEFAULT setObject:@(_mistakes + 1) forKey:USERTRYCOUNTKEY];
 }
 
-- (BOOL) isPassWordCorrect{
+- (BOOL) isPassWordCorrect
+{
     if ([[self getCurrentPasswordString] isEqualToString:[self getPassword]]) {
         return YES;
     }
     return NO;
 }
 
--(void)calculateDirect{
+-(void)calculateDirect
+{
     
     NSUInteger count = self.lockViews.count;
     
     if(self.lockViews ==nil || count<=1) return;
-    GLLockViewItem *item_1 = self.lockViews.lastObject;
-    GLLockViewItem *item_2 =self.lockViews[count -2];
+    CMGestureLockViewItem *item_1 = self.lockViews.lastObject;
+    CMGestureLockViewItem *item_2 =self.lockViews[count -2];
     
     CGFloat item_1_x = item_1.frame.origin.x;
     CGFloat item_1_y = item_1.frame.origin.y;
@@ -587,35 +640,42 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
 }
 
 #pragma mark- setter
-- (void) setShowTitle:(NSString *)showTitle{
+- (void) setShowTitle:(NSString *)showTitle
+{
     _showTitle = showTitle;
     self.showTitleLabel.text = _showTitle;
 }
 
-- (void) setShowSubTitle:(NSString *)showSubTitle{
+- (void) setShowSubTitle:(NSString *)showSubTitle
+{
     self.showSubTitleLabel.text = showSubTitle;
 }
 
-- (void) setBottomTitle:(NSString *)bottomTitle{
+- (void) setBottomTitle:(NSString *)bottomTitle
+{
     _bottomTitle = bottomTitle;
     [self.showBottomButton setTitle:_bottomTitle forState:UIControlStateNormal];
 }
 
-- (void) setShowTitleColor:(UIColor *)showTitleColor{
+- (void) setShowTitleColor:(UIColor *)showTitleColor
+{
     _showTitleColor = showTitleColor;
     [self.showTitleLabel setTextColor:_showTitleColor];
 }
 
-- (void) setShowSubTitleColor:(UIColor *)showSubTitleColor{
+- (void) setShowSubTitleColor:(UIColor *)showSubTitleColor
+{
     [self.showSubTitleLabel setTextColor:showSubTitleColor];
 }
 
-- (void) setBottomTitleColor:(UIColor *)bottomTitleColor{
+- (void) setBottomTitleColor:(UIColor *)bottomTitleColor
+{
     _bottomTitleColor = bottomTitleColor;
     [self.showBottomButton setTitleColor:_bottomTitleColor forState:UIControlStateNormal];
 }
 
-- (void) setBottomView:(UIView *)bottomView{
+- (void) setBottomView:(UIView *)bottomView
+{
     _bottomView = bottomView;
     if (_bottomView) {
         [self.bottomContenterView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -623,46 +683,71 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) setLockType:(CHYLockViewType)lockType{
+- (void) setLockType:(CMGestureLockViewType)lockType
+{
     _lockType = lockType;
     [self buildUI];
 }
 
-#pragma mark- Interface
-- (void) showLogoByCircularMask:(BOOL)isShow{
+- (void) setAvatar:(UIImage *)avatar
+{
+    _avatar = avatar;
+    self.showAvatar.image = avatar;
+}
+
+#pragma mark- 对外接口
+- (void) showAvatarByCircularMask:(BOOL)isShow
+{
     if (isShow) {
-        [self.showLogoImageView.layer setCornerRadius:self.showLogoImageView.frame.size.width];
+        [self.showAvatar.layer setCornerRadius:self.showAvatar.bounds.size.width /2];
     }else{
-        [self.showLogoImageView.layer setCornerRadius:0];
+        [self.showAvatar.layer setCornerRadius:0];
     }
 }
 
-- (BOOL) existUserPasswordKey:(NSString *)key{
-    return [[USERCENTER objectForKey:key] boolValue];
+- (BOOL) existUserPasswordKey:(NSString *)key
+{
+    return [[USERDEFAULT objectForKey:key] isEqualToString:@"YES"];
 }
 
-- (BOOL) existDefaultPasswordKey{
-    return [[USERCENTER objectForKey:DEFAULTPAASWORDKEY] boolValue];
+- (BOOL) existDefaultPasswordKey
+{
+    return [self existUserPasswordKey:UDKey_DefaultGesturePasswordExistValue];
 }
 
-- (void) resetSetting {
+- (void) resetSetting
+{
     [self setShowSubTitle:StartDraw];
     self.firstPassword = nil;
-    [self setPassword:CHYLockSettingStepZero];
+    [self setPassword:CMGestureLockSettingStepZero];
 }
 
-#pragma  mark- Actions
-- (void) bottomButoonEvent:(id)sender{
++ (void) setShowSubTitle:(NSString *)showSubTitle
+{
+    StartDraw = showSubTitle;
+}
+
++ (void) deletePassword
+{
+    [USERDEFAULT removeObjectForKey:UDKey_GesturePassword];
+    [USERDEFAULT setObject:@"NO" forKey:UDKey_CustomGesturePasswordExistValue];
+}
+
+#pragma  mark- Block 回调
+- (void) bottomButoonEvent:(id)sender
+{
     NSLog(@"First blood!");
 }
 
-- (void) doSuccessBlock{
+- (void) doSuccessBlock
+{
     if (self.unLockSuccessBlock) {
         self.unLockSuccessBlock();
     }
 }
 
-- (void) doFailedBlock{
+- (void) doFailedBlock
+{
     _mistakes = [self getMistakeNumber];
     [self setShowSubTitleColor:[UIColor redColor]];
     [self setShowSubTitle:[NSString stringWithFormat:@"绘制错误，剩余%ld次",5 - _mistakes]];
@@ -676,7 +761,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     }
 }
 
-- (void) doMaxWrongBlock{
+- (void) doMaxWrongBlock
+{
     if (self.maxWrongBlock) {
         self.maxWrongBlock();
     }
@@ -689,7 +775,8 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
 }
 
 #pragma mark- 动画
-- (void)shakeAnimation{
+- (void) shakeAnimation
+{
     CGFloat centerX = self.showSubTitleLabel.center.x;
     CGFloat centerY = self.showSubTitleLabel.center.y;
     CGPoint left_1 = CGPointMake(centerX - 6, centerY);
@@ -706,7 +793,7 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
                            [NSValue valueWithCGPoint:right_1],
                            [NSValue valueWithCGPoint:right_2],
                            [NSValue valueWithCGPoint:right_3]
-];
+                           ];
     
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     animation.values = positions;
@@ -715,4 +802,13 @@ typedef NS_ENUM(NSUInteger, CHYLockUnLockStep) {
     animation.removedOnCompletion = YES;
     [self.showSubTitleLabel.layer addAnimation:animation forKey:@"shakeAnimtion"];
 }
+
+- (void) addAnimationForShowAvatar
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.showAvatar.transform = CGAffineTransformIdentity;
+        self.showTitleLabel.alpha = 1.0;
+    }];
+}
+
 @end

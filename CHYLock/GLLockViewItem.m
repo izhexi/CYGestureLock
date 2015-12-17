@@ -15,7 +15,7 @@ NSString *const solidCircleColor = @"#2A2A2A";
 
 
 
-@implementation GLLockViewItem
+@implementation CMGestureLockViewItem
 {
     BOOL _isTouched;
     BOOL _isWrong;
@@ -24,7 +24,8 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGFloat _angle;
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void)drawRect:(CGRect)rect
+{
     _externRadius = self.frame.size.height - 2;
     _externSolidRadius = _externRadius / 3;
     [self drawSolidCircle:rect color:[UIColor colorWithHexString:solidCircleColor alpha:1.0]];
@@ -36,7 +37,8 @@ NSString *const solidCircleColor = @"#2A2A2A";
     }
 }
 
-- (void) drawLockViewWith:(CGRect)rect user:(UIColor *)color{
+- (void) drawLockViewWith:(CGRect)rect user:(UIColor *)color
+{
     CGColorRef cgcolor = color.CGColor;
     CGContextRef cx = UIGraphicsGetCurrentContext();
     CGContextSaveGState(cx);
@@ -61,7 +63,8 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGContextRestoreGState(cx);
 }
 
-- (void) drawTriangleRect:(CGRect )rect color:(UIColor *)color{
+- (void) drawTriangleRect:(CGRect )rect color:(UIColor *)color
+{
     if (self.direct == 0) {
         return;
     }
@@ -75,12 +78,13 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGContextMoveToPoint(cx, topPoint.x, topPoint.y);
     CGContextAddLineToPoint(cx, leftPoint.x, leftPoint.y);
     CGContextAddLineToPoint(cx, rightPoint.x, rightPoint.y);
-        CGContextClosePath(cx);
+    CGContextClosePath(cx);
     CGContextFillPath(cx);
-
+    
 }
 
-- (void) drawSolidCircle:(CGRect)rect color:(UIColor *)color{
+- (void) drawSolidCircle:(CGRect)rect color:(UIColor *)color
+{
     CGColorRef cgcolor = color.CGColor;
     CGContextRef cx = UIGraphicsGetCurrentContext();
     CGContextSaveGState(cx);
@@ -90,16 +94,18 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGRect solidRect = CGRectMake(centerX - _externSolidRadius / 2, centerY -  _externSolidRadius / 2, _externSolidRadius, _externSolidRadius);
     CGContextFillEllipseInRect(cx, solidRect);
     CGContextRestoreGState(cx);
-
+    
 }
 
-- (void) setDirect:(LockItemViewDirect)direct{
+- (void) setDirect:(LockItemViewDirect)direct
+{
     _direct = direct;
     _angle = M_PI_4 *(direct - 1);
     [self setNeedsDisplay];
 }
 
-- (void) setTouched:(BOOL)isTouched{
+- (void) setTouched:(BOOL)isTouched
+{
     _isTouched = isTouched;
 }
 
@@ -107,11 +113,13 @@ NSString *const solidCircleColor = @"#2A2A2A";
     return _isTouched;
 }
 
-- (void) setWrongUnlock:(BOOL)isWrong{
+- (void) setWrongUnlock:(BOOL)isWrong
+{
     _isWrong = isWrong;
 }
 
-- (BOOL) isWrongUnlock{
+- (BOOL) isWrongUnlock
+{
     return _isWrong;
 }
 @end

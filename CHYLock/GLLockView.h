@@ -1,6 +1,6 @@
 //
-//  GLLockView.h
-//  CHYLock
+//  CMGestureLockView.h
+//  CMGestureLock
 //
 //  Created by chenyun on 15/11/24.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -9,38 +9,50 @@
 #import <UIKit/UIKit.h>
 #import "GLLockViewItem.h"
 
-typedef NS_ENUM(NSUInteger, CHYLockViewType) {
-    CHYLockViewTypeSetting = 1,
-    CHYLockViewTypeUnlock,
-    CHYLockViewTypeModify,
-    CHYLockViewTypeClear,
+typedef NS_ENUM(NSUInteger, CMGestureLockViewType) {
+    CMGestureLockViewTypeSetting = 1,
+    CMGestureLockViewTypeUnlock,
+    CMGestureLockViewTypeModify,
+    CMGestureLockViewTypeClear,
 };
 
-typedef void(^GLLockViewBlock)(void);
+typedef void(^CMGestureLockViewBlock)(void);
 
 extern NSString *const CanResetNotice;
 
 extern NSString *const SetSuccessNotice;
 
-@interface GLLockView : UIView
+@protocol CMGestureLockViewProtocol <NSObject>
+
+@optional
+- (NSString *) encryptPassword:(NSString *)password;
+
+- (NSString *) decryptPassword:(NSString *)password;
+
+@end
+
+@interface CMGestureLockView : UIView
 @property (nonatomic, copy) NSString *showTitle;
-//@property (nonatomic, copy) NSString *showSubTitle;
+@property (nonatomic, copy) NSString *showSubTitle;
 @property (nonatomic, copy) NSString *bottomTitle;
-@property (nonatomic, strong) UIImage *showLogo;
+@property (nonatomic, strong) UIImage *avatar;
 @property (nonatomic, strong) UIColor *showTitleColor;
 //@property (nonatomic, strong) UIColor *showSubTitleColor;
 @property (nonatomic, strong) UIColor *bottomTitleColor;
 @property (nonatomic, strong) UIView *bottomView;//默认为nil
 
-@property (nonatomic, copy) GLLockViewBlock unLockSuccessBlock;
-@property (nonatomic, copy) GLLockViewBlock maxWrongBlock;
-@property (nonatomic, copy) GLLockViewBlock forgotPasswordBlock;
+@property (nonatomic, copy) CMGestureLockViewBlock unLockSuccessBlock;
+@property (nonatomic, copy) CMGestureLockViewBlock maxWrongBlock;
+@property (nonatomic, copy) CMGestureLockViewBlock forgotPasswordBlock;
 
-@property (nonatomic, assign) CHYLockViewType lockType;
-@property (nonatomic, copy) NSString *lockKey;
+@property (nonatomic, assign) CMGestureLockViewType lockType;
+@property (nonatomic, weak) id<CMGestureLockViewProtocol>delegate;
 
++ (void) setShowSubTitle:(NSString *)showSubTitle;
 
-- (void)showLogoByCircularMask:(BOOL)isShow;
++ (void) deletePassword;
+
+- (void)showAvatarByCircularMask:(BOOL)isShow;
 
 - (BOOL) existUserPasswordKey:(NSString *)key;
 

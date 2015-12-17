@@ -19,25 +19,25 @@
     [super viewDidLoad];
 }
 - (IBAction)modifyEvent:(id)sender {
-    GLLockViewController *vc = [[GLLockViewController alloc]init];
-    vc.lockType = CHYLockViewTypeModify;
-    [self.navigationController pushViewController:vc animated:YES];
+//    GLLockViewController *vc = [[GLLockViewController alloc]init];
+//    vc.lockType = CHYLockViewTypeModify;
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)setEvent:(id)sender {
-    GLLockViewController *vc = [[GLLockViewController alloc]init];
-    vc.lockType = CHYLockViewTypeSetting;
-    [self.navigationController pushViewController:vc animated:YES];
+//    GLLockViewController *vc = [[GLLockViewController alloc]init];
+//    vc.lockType = CHYLockViewTypeSetting;
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)unlockEvent:(id)sender {
-    GLLockViewController *vc = [[GLLockViewController alloc]init];
-    vc.lockType = CHYLockViewTypeUnlock;
-    [self.navigationController pushViewController:vc animated:YES];
+//    GLLockViewController *vc = [[GLLockViewController alloc]init];
+//    vc.lockType = CHYLockViewTypeUnlock;
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)clearEvent:(id)sender {
-    GLLockViewController *vc = [[GLLockViewController alloc]init];
-    vc.lockType = CHYLockViewTypeClear;
-//    [self.navigationController pushViewController:vc animated:YES];
-    [self presentViewController:vc animated:YES completion:nil];
+//    GLLockViewController *vc = [[GLLockViewController alloc]init];
+//    vc.lockType = CHYLockViewTypeClear;
+////    [self.navigationController pushViewController:vc animated:YES];
+//    [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
