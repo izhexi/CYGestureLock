@@ -1,6 +1,6 @@
 //
-//  CMGestureLockView.h
-//  CMGestureLock
+//  CYGestureLockView.h
+//  CYGestureLock
 //
 //  Created by chenyun on 15/11/24.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -9,20 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "GLLockViewItem.h"
 
-typedef NS_ENUM(NSUInteger, CMGestureLockViewType) {
-    CMGestureLockViewTypeSetting = 1,
-    CMGestureLockViewTypeUnlock,
-    CMGestureLockViewTypeModify,
-    CMGestureLockViewTypeClear,
+typedef NS_ENUM(NSUInteger, CYGestureLockViewType) {
+    CYGestureLockViewTypeSetting = 1,
+    CYGestureLockViewTypeUnlock,
+    CYGestureLockViewTypeModify,
+    CYGestureLockViewTypeClear,
 };
 
-typedef void(^CMGestureLockViewBlock)(void);
+typedef void(^CYGestureLockViewBlock)(void);
 
 extern NSString *const CanResetNotice;
 
 extern NSString *const SetSuccessNotice;
 
-@protocol CMGestureLockViewProtocol <NSObject>
+@protocol CYGestureLockViewProtocol <NSObject>
 
 @optional
 - (NSString *) encryptPassword:(NSString *)password;
@@ -31,7 +31,7 @@ extern NSString *const SetSuccessNotice;
 
 @end
 
-@interface CMGestureLockView : UIView
+@interface CYGestureLockView : UIView
 @property (nonatomic, copy) NSString *showTitle;
 @property (nonatomic, copy) NSString *showSubTitle;
 @property (nonatomic, copy) NSString *bottomTitle;
@@ -41,12 +41,12 @@ extern NSString *const SetSuccessNotice;
 @property (nonatomic, strong) UIColor *bottomTitleColor;
 @property (nonatomic, strong) UIView *bottomView;//默认为nil
 
-@property (nonatomic, copy) CMGestureLockViewBlock unLockSuccessBlock;
-@property (nonatomic, copy) CMGestureLockViewBlock maxWrongBlock;
-@property (nonatomic, copy) CMGestureLockViewBlock forgotPasswordBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock unLockSuccessBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock maxWrongBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock forgotPasswordBlock;
 
-@property (nonatomic, assign) CMGestureLockViewType lockType;
-@property (nonatomic, weak) id<CMGestureLockViewProtocol>delegate;
+@property (nonatomic, assign) CYGestureLockViewType lockType;
+@property (nonatomic, weak) id<CYGestureLockViewProtocol>delegate;
 
 + (void) setShowSubTitle:(NSString *)showSubTitle;
 

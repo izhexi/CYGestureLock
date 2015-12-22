@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "GLLockViewController.h"
+#import "CYGestureLockManager.h"
 
 @interface ViewController ()
 
@@ -19,25 +19,23 @@
     [super viewDidLoad];
 }
 - (IBAction)modifyEvent:(id)sender {
-//    GLLockViewController *vc = [[GLLockViewController alloc]init];
-//    vc.lockType = CHYLockViewTypeModify;
-//    [self.navigationController pushViewController:vc animated:YES];
+    [CYGestureLockManager presentLockControllerFrom:self typed:CYGestureLockViewTypeModify animted:YES showBack:YES successBlock:^{
+    
+    }];
 }
 - (IBAction)setEvent:(id)sender {
-//    GLLockViewController *vc = [[GLLockViewController alloc]init];
-//    vc.lockType = CHYLockViewTypeSetting;
-//    [self.navigationController pushViewController:vc animated:YES];
+    [CYGestureLockManager pushLockControllerForm:self typed:CYGestureLockViewTypeSetting animted:YES successBlock:^{
+    }];
 }
 - (IBAction)unlockEvent:(id)sender {
-//    GLLockViewController *vc = [[GLLockViewController alloc]init];
-//    vc.lockType = CHYLockViewTypeUnlock;
-//    [self.navigationController pushViewController:vc animated:YES];
+    [CYGestureLockManager presentLockControllerFrom:self typed:CYGestureLockViewTypeUnlock animted:YES showBack:NO successBlock:^{
+        
+    }];
 }
 - (IBAction)clearEvent:(id)sender {
-//    GLLockViewController *vc = [[GLLockViewController alloc]init];
-//    vc.lockType = CHYLockViewTypeClear;
-////    [self.navigationController pushViewController:vc animated:YES];
-//    [self presentViewController:vc animated:YES completion:nil];
+    [CYGestureLockManager presentLockControllerFrom:self typed:CYGestureLockViewTypeClear animted:YES showBack:YES successBlock:^{
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

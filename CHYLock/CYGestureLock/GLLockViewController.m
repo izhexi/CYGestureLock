@@ -1,6 +1,6 @@
 //
-//  CMGestureLockViewController.m
-//  CMGestureLock
+//  CYGestureLockViewController.m
+//  CYGestureLock
 //
 //  Created by chenyun on 15/11/30.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -9,17 +9,17 @@
 #import "GLLockViewController.h"
 #import <LocalAuthentication/LocalAuthentication.h>
 
-@interface CMGestureLockViewController ()<CMGestureLockViewProtocol>
-@property (nonatomic, strong) CMGestureLockView *lockView;
+@interface CYGestureLockViewController ()<CYGestureLockViewProtocol>
+@property (nonatomic, strong) CYGestureLockView *lockView;
 //@property (nonatomic, assign) BOOL isPresent;
 @end
 
-@implementation CMGestureLockViewController
+@implementation CYGestureLockViewController
 
-+ (instancetype) LockViewControllerWithType:(CMGestureLockViewType)lockType
++ (instancetype) LockViewControllerWithType:(CYGestureLockViewType)lockType
 {
-    CMGestureLockViewController *lockVC = [[CMGestureLockViewController alloc]init];
-    lockVC.lockView = [[CMGestureLockView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    CYGestureLockViewController *lockVC = [[CYGestureLockViewController alloc]init];
+    lockVC.lockView = [[CYGestureLockView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     lockVC.lockView.lockType = lockType;
     return lockVC;
 }
@@ -36,7 +36,7 @@
 
 + (void) deletePassword
 {
-    [CMGestureLockView deletePassword];
+    [CYGestureLockView deletePassword];
 }
 
 - (void) viewDidLoad
@@ -62,7 +62,7 @@
 //- (void) addBackButtonForNavigationBar
 //{
 //    UIButton *settingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 28)];
-//    UIImage *image = CM_Image(@"cm_icon_white_arrow_left");
+//    UIImage *image = CY_Image(@"CY_icon_white_arrow_left");
 //    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
 //    [imageView setFrame:CGRectMake(6, 14-image.size.height/2, image.size.width, image.size.height)];
 //    [settingButton addSubview:imageView];
@@ -92,7 +92,7 @@
 //- (void)addBackButton
 //{
 //    UIButton *settingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 28)];
-//    [settingButton setImage:CM_Image(@"cm_nav_btn_back_black") forState:UIControlStateNormal];
+//    [settingButton setImage:CY_Image(@"CY_nav_btn_back_black") forState:UIControlStateNormal];
 //    [settingButton setTitle:@"返回" forState:UIControlStateNormal];
 //    [settingButton addTarget:self action:@selector(dismissAction) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:settingButton];
@@ -125,7 +125,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void) setLockView:(CMGestureLockView *)lockView
+- (void) setLockView:(CYGestureLockView *)lockView
 {
     _lockView = lockView;
     _lockView.delegate = self;
@@ -139,7 +139,7 @@
 
 + (void) setShowSubtitle:(NSString *)showSubtitle
 {
-    [CMGestureLockView setShowSubTitle:showSubtitle];
+    [CYGestureLockView setShowSubTitle:showSubtitle];
 }
 
 - (void) setBottomTitle:(NSString *)bottomTitle
@@ -172,17 +172,17 @@
     [self.lockView showAvatarByCircularMask:isShow];
 }
 
-- (void) setUnLockSuccessBlock:(CMGestureLockViewBlock)unLockSuccessBlock
+- (void) setUnLockSuccessBlock:(CYGestureLockViewBlock)unLockSuccessBlock
 {
     self.lockView.unLockSuccessBlock = unLockSuccessBlock;
 }
 
-- (void) setMaxWrongBlock:(CMGestureLockViewBlock)maxWrongBlock
+- (void) setMaxWrongBlock:(CYGestureLockViewBlock)maxWrongBlock
 {
     self.lockView.maxWrongBlock = maxWrongBlock;
 }
 
-- (void) setForgotPasswordBlock:(CMGestureLockViewBlock)forgotPasswordBlock
+- (void) setForgotPasswordBlock:(CYGestureLockViewBlock)forgotPasswordBlock
 {
     self.lockView.forgotPasswordBlock = forgotPasswordBlock;
 }
@@ -202,12 +202,18 @@
 #pragma mark- 加解密回调
 - (NSString *) encryptPassword:(NSString *)password
 {
+    if (self.encryptBlock) {
         return self.encryptBlock(password);
+    }
+    return password;
 }
 
 - (NSString *) decryptPassword:(NSString *)password
 {
+    if (self.decryptBlock) {
         return self.decryptBlock(password);
+    }
+    return password;
 }
 
 #pragma mark - FingerUnlock
@@ -250,14 +256,14 @@
 
 - (void)fingerUnlock
 {
-    if (self.lockType == CMGestureLockViewTypeSetting) {
+    if (self.lockType == CYGestureLockViewTypeSetting) {
         return;
     }
-    if([CMGestureLockViewController fingerUnlockOSSupport]
-       && [CMGestureLockViewController fingerUnlockOSSetOn]
-       && [CMGestureLockViewController fingerUnlockAppSetOn])
+    if([CYGestureLockViewController fingerUnlockOSSupport]
+       && [CYGestureLockViewController fingerUnlockOSSetOn]
+       && [CYGestureLockViewController fingerUnlockAppSetOn])
     {
-        __block CMGestureLockViewController *weakSelf = self;
+        __block CYGestureLockViewController *weakSelf = self;
         LAContext *context = [[LAContext alloc]init];
         context.localizedFallbackTitle = @"";
         [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:@"您可以使用指纹进行解锁" reply:^(BOOL success, NSError *error) {

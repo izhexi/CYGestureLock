@@ -13,10 +13,11 @@
 		EF0F725B1BFB61D400A99984 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF0F72591BFB61D400A99984 /* Main.storyboard */; };
 		EF0F725D1BFB61D400A99984 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF0F725C1BFB61D400A99984 /* Assets.xcassets */; };
 		EF0F72601BFB61D400A99984 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF0F725E1BFB61D400A99984 /* LaunchScreen.storyboard */; };
-		EF0F72691BFC206100A99984 /* GLLockViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F72681BFC206100A99984 /* GLLockViewItem.m */; };
-		EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */; };
-		EF0F727C1C04689200A99984 /* GLLockView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0F727B1C04689200A99984 /* GLLockView.m */; };
-		EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4378721C0C4FBB009CB820 /* GLLockViewController.m */; };
+		EFEF84921C28F8A700E20965 /* GLLockView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFEF84881C28F8A700E20965 /* GLLockView.m */; };
+		EFEF84931C28F8A700E20965 /* GLLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFEF848A1C28F8A700E20965 /* GLLockViewController.m */; };
+		EFEF84941C28F8A700E20965 /* GLLockViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EFEF848C1C28F8A700E20965 /* GLLockViewItem.m */; };
+		EFEF84951C28F8A700E20965 /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EFEF84911C28F8A700E20965 /* UIColor+HexColor.m */; };
+		EFEF849C1C29333E00E20965 /* CYGestureLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFEF849B1C29333E00E20965 /* CYGestureLockManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,14 +31,18 @@
 		EF0F725C1BFB61D400A99984 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF0F725F1BFB61D400A99984 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EF0F72611BFB61D400A99984 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EF0F72671BFC206100A99984 /* GLLockViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewItem.h; sourceTree = "<group>"; };
-		EF0F72681BFC206100A99984 /* GLLockViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewItem.m; sourceTree = "<group>"; };
-		EF0F726A1BFC50E600A99984 /* UIColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexColor.h"; sourceTree = "<group>"; };
-		EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
-		EF0F727A1C04689200A99984 /* GLLockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockView.h; sourceTree = "<group>"; };
-		EF0F727B1C04689200A99984 /* GLLockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockView.m; sourceTree = "<group>"; };
-		EF4378711C0C4FBB009CB820 /* GLLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewController.h; sourceTree = "<group>"; };
-		EF4378721C0C4FBB009CB820 /* GLLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewController.m; sourceTree = "<group>"; };
+		EFEF84871C28F8A700E20965 /* GLLockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockView.h; sourceTree = "<group>"; };
+		EFEF84881C28F8A700E20965 /* GLLockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockView.m; sourceTree = "<group>"; };
+		EFEF84891C28F8A700E20965 /* GLLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewController.h; sourceTree = "<group>"; };
+		EFEF848A1C28F8A700E20965 /* GLLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewController.m; sourceTree = "<group>"; };
+		EFEF848B1C28F8A700E20965 /* GLLockViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLockViewItem.h; sourceTree = "<group>"; };
+		EFEF848C1C28F8A700E20965 /* GLLockViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLockViewItem.m; sourceTree = "<group>"; };
+		EFEF848E1C28F8A700E20965 /* CHYUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHYUtil.h; sourceTree = "<group>"; };
+		EFEF848F1C28F8A700E20965 /* GLPCH.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLPCH.pch; sourceTree = "<group>"; };
+		EFEF84901C28F8A700E20965 /* UIColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexColor.h"; sourceTree = "<group>"; };
+		EFEF84911C28F8A700E20965 /* UIColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
+		EFEF849A1C29333E00E20965 /* CYGestureLockManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYGestureLockManager.h; sourceTree = "<group>"; };
+		EFEF849B1C29333E00E20965 /* CYGestureLockManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYGestureLockManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +75,8 @@
 		EF0F724F1BFB61D400A99984 /* CHYLock */ = {
 			isa = PBXGroup;
 			children = (
+				EFEF84861C28F8A700E20965 /* CYGestureLock */,
+				EFEF848D1C28F8A700E20965 /* Util */,
 				EF0F72531BFB61D400A99984 /* AppDelegate.h */,
 				EF0F72541BFB61D400A99984 /* AppDelegate.m */,
 				EF0F72561BFB61D400A99984 /* ViewController.h */,
@@ -79,14 +86,6 @@
 				EF0F725E1BFB61D400A99984 /* LaunchScreen.storyboard */,
 				EF0F72611BFB61D400A99984 /* Info.plist */,
 				EF0F72501BFB61D400A99984 /* Supporting Files */,
-				EF4378711C0C4FBB009CB820 /* GLLockViewController.h */,
-				EF4378721C0C4FBB009CB820 /* GLLockViewController.m */,
-				EF0F727A1C04689200A99984 /* GLLockView.h */,
-				EF0F727B1C04689200A99984 /* GLLockView.m */,
-				EF0F72671BFC206100A99984 /* GLLockViewItem.h */,
-				EF0F72681BFC206100A99984 /* GLLockViewItem.m */,
-				EF0F726A1BFC50E600A99984 /* UIColor+HexColor.h */,
-				EF0F726B1BFC50E600A99984 /* UIColor+HexColor.m */,
 			);
 			path = CHYLock;
 			sourceTree = "<group>";
@@ -97,6 +96,32 @@
 				EF0F72511BFB61D400A99984 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EFEF84861C28F8A700E20965 /* CYGestureLock */ = {
+			isa = PBXGroup;
+			children = (
+				EFEF84871C28F8A700E20965 /* GLLockView.h */,
+				EFEF84881C28F8A700E20965 /* GLLockView.m */,
+				EFEF84891C28F8A700E20965 /* GLLockViewController.h */,
+				EFEF848A1C28F8A700E20965 /* GLLockViewController.m */,
+				EFEF848B1C28F8A700E20965 /* GLLockViewItem.h */,
+				EFEF848C1C28F8A700E20965 /* GLLockViewItem.m */,
+				EFEF849A1C29333E00E20965 /* CYGestureLockManager.h */,
+				EFEF849B1C29333E00E20965 /* CYGestureLockManager.m */,
+			);
+			path = CYGestureLock;
+			sourceTree = "<group>";
+		};
+		EFEF848D1C28F8A700E20965 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				EFEF848E1C28F8A700E20965 /* CHYUtil.h */,
+				EFEF848F1C28F8A700E20965 /* GLPCH.pch */,
+				EFEF84901C28F8A700E20965 /* UIColor+HexColor.h */,
+				EFEF84911C28F8A700E20965 /* UIColor+HexColor.m */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,13 +196,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFEF849C1C29333E00E20965 /* CYGestureLockManager.m in Sources */,
 				EF0F72581BFB61D400A99984 /* ViewController.m in Sources */,
-				EF4378731C0C4FBB009CB820 /* GLLockViewController.m in Sources */,
-				EF0F72691BFC206100A99984 /* GLLockViewItem.m in Sources */,
-				EF0F726C1BFC50E600A99984 /* UIColor+HexColor.m in Sources */,
 				EF0F72551BFB61D400A99984 /* AppDelegate.m in Sources */,
-				EF0F727C1C04689200A99984 /* GLLockView.m in Sources */,
+				EFEF84931C28F8A700E20965 /* GLLockViewController.m in Sources */,
+				EFEF84951C28F8A700E20965 /* UIColor+HexColor.m in Sources */,
+				EFEF84921C28F8A700E20965 /* GLLockView.m in Sources */,
 				EF0F72521BFB61D400A99984 /* main.m in Sources */,
+				EFEF84941C28F8A700E20965 /* GLLockViewItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,7 +313,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/CHYLock/Util/GLPCH.pch";
 				INFOPLIST_FILE = CHYLock/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.51zhangdan.CHYLock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -298,7 +326,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/CHYLock/Util/GLPCH.pch";
 				INFOPLIST_FILE = CHYLock/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.51zhangdan.CHYLock;
 				PRODUCT_NAME = "$(TARGET_NAME)";

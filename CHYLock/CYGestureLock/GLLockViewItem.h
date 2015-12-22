@@ -36,7 +36,7 @@ typedef enum {
     
 }LockItemViewDirect;
 
-@interface CMGestureLockViewItem : UIView
+@interface CYGestureLockViewItem : UIView
 
 @property (nonatomic, copy) NSString *number;
 @property (nonatomic, assign) LockItemViewDirect direct;

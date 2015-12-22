@@ -20,10 +20,8 @@
 #define IS_Iphone6          (SCREEN_HEIGHT == 667)
 #define IS_Iphone6p         (SCREEN_HEIGHT == 736)
 //USER KEY
-#define UDKey_CustomGesturePasswordExistValue @"UDKey_GesturePasswordExistValue"
 #define UDKey_DefaultGesturePasswordExistValue @"UDKey_DefaultGesturePasswordExistValue"
 #define UDKey_FingerPrintPasswordSwitch @"UDKey_FingerPrintPasswordSwitch"
 #define UDKey_GesturePassword @"UDKey_GesturePassword"
-#define DEFAULTPAASWORDKEY  @"DefaultUserPassWordKey"
-#define USERTRYCOUNTKEY     @"UserTryCountKey"
+#define UDKey_USERTRYCOUNTKEY     @"UserTryCountKey"
 #endif /* CHYUtil_h */

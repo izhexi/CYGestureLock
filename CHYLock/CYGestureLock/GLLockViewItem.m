@@ -15,7 +15,7 @@ NSString *const solidCircleColor = @"#2A2A2A";
 
 
 
-@implementation CMGestureLockViewItem
+@implementation CYGestureLockViewItem
 {
     BOOL _isTouched;
     BOOL _isWrong;
@@ -23,7 +23,6 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGFloat _externSolidRadius;
     CGFloat _angle;
 }
-
 - (void)drawRect:(CGRect)rect
 {
     _externRadius = self.frame.size.height - 2;
@@ -59,7 +58,13 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGContextSetFillColorWithColor(cx,cgcolor);
     CGRect solidRect = CGRectMake(centerX - _externSolidRadius / 2, centerY -  _externSolidRadius / 2, _externSolidRadius, _externSolidRadius);
     CGContextFillEllipseInRect(cx, solidRect);
-    [self drawTriangleRect:rect color:[UIColor greenColor]];
+    if ([self isWrongUnlock]) {
+        [self drawTriangleRect:rect color:color];
+    }else
+    {
+        [self drawTriangleRect:rect color:[UIColor greenColor]];
+    }
+    
     CGContextRestoreGState(cx);
 }
 
@@ -73,8 +78,8 @@ NSString *const solidCircleColor = @"#2A2A2A";
     CGFloat centerX = rect.size.width / 2;
     CGFloat centerY = rect.size.height / 2;
     CGPoint topPoint = CGPointMake(centerX, centerY - _externSolidRadius);
-    CGPoint leftPoint = CGPointMake(centerX - _externSolidRadius / 2 +5, centerY - 10);
-    CGPoint rightPoint = CGPointMake(centerX + _externSolidRadius / 2 -5, centerY - 10);
+    CGPoint leftPoint = CGPointMake(centerX - _externSolidRadius / 2 +10, centerY - 15);
+    CGPoint rightPoint = CGPointMake(centerX + _externSolidRadius / 2 -10, centerY - 15);
     CGContextMoveToPoint(cx, topPoint.x, topPoint.y);
     CGContextAddLineToPoint(cx, leftPoint.x, leftPoint.y);
     CGContextAddLineToPoint(cx, rightPoint.x, rightPoint.y);

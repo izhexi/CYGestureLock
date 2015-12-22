@@ -1,6 +1,6 @@
 //
-//  CMGestureLockView.m
-//  CMGestureLock
+//  CYGestureLockView.m
+//  CYGestureLock
 //
 //  Created by chenyun on 15/11/24.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -24,33 +24,33 @@ NSString *const CompleteDraw = @"设置完成";
 
 NSString *const ModifyDraw = @"请输入原手势密码";
 
-typedef NS_ENUM(NSUInteger, CMGestureLockSettingStep) {
-    CMGestureLockSettingStepZero = 1,
-    CMGestureLockSettingStepFirst,
-    CMGestureLockSettingStepSecond,
+typedef NS_ENUM(NSUInteger, CYGestureLockSettingStep) {
+    CYGestureLockSettingStepZero = 1,
+    CYGestureLockSettingStepFirst,
+    CYGestureLockSettingStepSecond,
 };
 
-typedef NS_ENUM(NSUInteger, CMGestureLockDrawWrongType) {
-    CMGestureLockDrawWrongTypeLength = 1,
-    CMGestureLockDrawWrongTypePassword,
+typedef NS_ENUM(NSUInteger, CYGestureLockDrawWrongType) {
+    CYGestureLockDrawWrongTypeLength = 1,
+    CYGestureLockDrawWrongTypePassword,
 };
 
-typedef NS_ENUM(NSUInteger, CMGestureLockModifyStep) {
-    CMGestureLockModifyStepUnlock = 1,
-    CMGestureLockModifyStepSetting,
+typedef NS_ENUM(NSUInteger, CYGestureLockModifyStep) {
+    CYGestureLockModifyStepUnlock = 1,
+    CYGestureLockModifyStepSetting,
 };
 
-typedef NS_ENUM(NSUInteger, CMGestureLockClearStep) {
-    CMGestureLockClearStepUnlcok = 1,
-    CMGestureLockClearStepClear,
+typedef NS_ENUM(NSUInteger, CYGestureLockClearStep) {
+    CYGestureLockClearStepUnlcok = 1,
+    CYGestureLockClearStepClear,
 };
 
-typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
-    CMGestureLockUnLockStepFirst = 1,
-    CMGestureLockUnLockStepSecond,
+typedef NS_ENUM(NSUInteger, CYGestureLockUnLockStep) {
+    CYGestureLockUnLockStepFirst = 1,
+    CYGestureLockUnLockStepSecond,
 };
 
-@interface CMGestureLockView()
+@interface CYGestureLockView()
 @property (nonatomic, strong) NSMutableArray *lockViews;
 @property (nonatomic, strong) UIImageView *showAvatar;
 @property (nonatomic, strong) UILabel *showTitleLabel;
@@ -59,12 +59,12 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 @property (nonatomic, strong) UIView *topContenterView;
 @property (nonatomic, strong) UIView *bottomContenterView;
 @property (nonatomic, strong) NSMutableArray *lockviewSubVies;
-@property (nonatomic, assign) CMGestureLockSettingStep settingStep;
-@property (nonatomic, assign) CMGestureLockModifyStep modifyStep;
+@property (nonatomic, assign) CYGestureLockSettingStep settingStep;
+@property (nonatomic, assign) CYGestureLockModifyStep modifyStep;
 @property (nonatomic, copy)   NSString *firstPassword;
 @end
 
-@implementation CMGestureLockView
+@implementation CYGestureLockView
 {
     CGPoint _currentPoint;
     BOOL _isWrong;
@@ -105,28 +105,28 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     [self addTopContenterView];
     [self addBottomContentView];
     switch (self.lockType) {
-        case CMGestureLockViewTypeSetting:
+        case CYGestureLockViewTypeSetting:
         {
-            [self setPassword:CMGestureLockSettingStepZero];
+            [self setPassword:CYGestureLockSettingStepZero];
         }
             break;
             
-        case CMGestureLockViewTypeUnlock:{
+        case CYGestureLockViewTypeUnlock:{
             if ([self existDefaultPasswordKey]) {
-                [self unLockPassword:CMGestureLockUnLockStepFirst];
+                [self unLockPassword:CYGestureLockUnLockStepFirst];
             } else {
-                _lockType = CMGestureLockViewTypeSetting;
-                [self setPassword:CMGestureLockSettingStepZero];
+                _lockType = CYGestureLockViewTypeSetting;
+                [self setPassword:CYGestureLockSettingStepZero];
             }
         }
             break;
             
-        case CMGestureLockViewTypeModify:{
-            [self modifyPassword:CMGestureLockModifyStepUnlock];
+        case CYGestureLockViewTypeModify:{
+            [self modifyPassword:CYGestureLockModifyStepUnlock];
         }
             break;
-        case CMGestureLockViewTypeClear:{
-            [self clearPassword:CMGestureLockClearStepUnlcok];
+        case CYGestureLockViewTypeClear:{
+            [self clearPassword:CYGestureLockClearStepUnlcok];
         }
             break;
         default:
@@ -208,7 +208,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 - (void) createCircle
 {
     for (NSUInteger i = 0; i < 9; i ++) {
-        CMGestureLockViewItem *circleView = [[CMGestureLockViewItem alloc]init];
+        CYGestureLockViewItem *circleView = [[CYGestureLockViewItem alloc]init];
         circleView.number = @(i+1).stringValue;
         circleView.backgroundColor = [UIColor clearColor];
         [self addSubview:circleView];
@@ -222,7 +222,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     for (NSUInteger i = 0; i < self.lockviewSubVies.count; i ++) {
         CGFloat row = i / 3;
         CGFloat col = i % 3;
-        CMGestureLockViewItem *lockView = self.lockviewSubVies[i];
+        CYGestureLockViewItem *lockView = self.lockviewSubVies[i];
         CGFloat marginX = 0;
         if (IS_Iphone4) {
             marginX = 20;
@@ -241,7 +241,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 {
     CGContextRef cx = UIGraphicsGetCurrentContext();
     for (NSUInteger i = 0; i < self.lockViews.count; i ++) {
-        CMGestureLockViewItem *view = self.lockViews[i];
+        CYGestureLockViewItem *view = self.lockViews[i];
         if (i == 0) {
             CGContextMoveToPoint(cx, view.center.x, view.center.y);
         }
@@ -267,7 +267,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 - (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self cancleTouch];
-    CMGestureLockViewItem *touchView = [self getTouchView:touches];
+    CYGestureLockViewItem *touchView = [self getTouchView:touches];
     if (touchView && ![touchView isTouched]) {
         [touchView setTouched:YES];
         [self addPasswordString:touchView];
@@ -277,7 +277,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 
 - (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    CMGestureLockViewItem *touchView = [self getTouchView:touches];
+    CYGestureLockViewItem *touchView = [self getTouchView:touches];
     _currentPoint = [touches.anyObject locationInView:self];
     [touchView setNeedsDisplay];
     if (![touchView isTouched] && touchView) {
@@ -295,7 +295,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 
 - (void) touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    CMGestureLockViewItem *touchView = [self getTouchView:touches];
+    CYGestureLockViewItem *touchView = [self getTouchView:touches];
     [touchView setTouched:NO];
 }
 
@@ -306,36 +306,36 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     if (self.lockViews.count == 0) {
         
     } else if (self.lockViews.count <4 && self.lockViews.count >= 1) {
-        [self wrongDrawed:CMGestureLockDrawWrongTypeLength];
+        [self wrongDrawed:CYGestureLockDrawWrongTypeLength];
     } else {
         [self passedDraw];
     }
-    __weak CMGestureLockView *weakSelf = self;
+    __weak CYGestureLockView *weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self cancleTouch];
         [weakSelf setNeedsDisplay];
     });
 }
 
-- (void) wrongDrawed:(CMGestureLockDrawWrongType)wrongType
+- (void) wrongDrawed:(CYGestureLockDrawWrongType)wrongType
 {
     _isWrong = YES;
     [self setShowSubTitleColor:[UIColor redColor]];
     switch (wrongType) {
-        case CMGestureLockDrawWrongTypeLength:
+        case CYGestureLockDrawWrongTypeLength:
         {
             [self setShowSubTitle:LengthWrong];
             [self shakeAnimation];
         }
             break;
-        case CMGestureLockDrawWrongTypePassword:{
+        case CYGestureLockDrawWrongTypePassword:{
             [self doFailedBlock];
         }
             break;
         default:
             break;
     }
-    for (CMGestureLockViewItem *circleView in self.lockViews) {
+    for (CYGestureLockViewItem *circleView in self.lockViews) {
         [circleView setWrongUnlock:YES];
         [circleView setNeedsDisplay];
     }
@@ -348,33 +348,33 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     [self setShowSubTitleColor:[UIColor blackColor]];
     [self setNeedsDisplay];
     switch (self.lockType) {
-        case CMGestureLockViewTypeSetting:
+        case CYGestureLockViewTypeSetting:
         {
             self.settingStep += 1;
             [self setPassword:self.settingStep];
-            if (self.settingStep == CMGestureLockSettingStepSecond) {
-                self.settingStep = CMGestureLockSettingStepZero;
+            if (self.settingStep == CYGestureLockSettingStepSecond) {
+                self.settingStep = CYGestureLockSettingStepZero;
             }
         }
             break;
             
-        case CMGestureLockViewTypeUnlock:{
-            [self unLockPassword:CMGestureLockUnLockStepSecond];
+        case CYGestureLockViewTypeUnlock:{
+            [self unLockPassword:CYGestureLockUnLockStepSecond];
         }
             break;
-        case CMGestureLockViewTypeModify:{
+        case CYGestureLockViewTypeModify:{
             if ([self isPassWordCorrect]) {
                 NSLog(@"解锁成功");
-                [self modifyPassword:CMGestureLockModifyStepSetting];
+                [self modifyPassword:CYGestureLockModifyStepSetting];
             } else {
                 NSLog(@"解锁失败");
                 [self doFailedBlock];
             }
         }
             break;
-        case CMGestureLockViewTypeClear:{
+        case CYGestureLockViewTypeClear:{
             if ([self isPassWordCorrect]) {
-                [self clearPassword:CMGestureLockClearStepClear];
+                [self clearPassword:CYGestureLockClearStepClear];
             } else {
                 [self doFailedBlock];
             }
@@ -385,11 +385,11 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     }
 }
 
-- (CMGestureLockViewItem *) getTouchView:(NSSet *)touches
+- (CYGestureLockViewItem *) getTouchView:(NSSet *)touches
 {
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    for (CMGestureLockViewItem *view in self.lockviewSubVies) {
+    for (CYGestureLockViewItem *view in self.lockviewSubVies) {
         if (CGRectContainsPoint(view.frame, touchPoint)) {
             return  view;
         }
@@ -402,7 +402,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     [self.lockViews removeAllObjects];
     _isWrong = NO;
     _isEndDraw = NO;
-    for (CMGestureLockViewItem *view in self.lockviewSubVies) {
+    for (CYGestureLockViewItem *view in self.lockviewSubVies) {
         [view setTouched:NO];
         [view setWrongUnlock:NO];
         [view setDirect:0];
@@ -420,7 +420,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 - (NSString *) getCurrentPasswordString
 {
     NSString *string = @"";
-    for (CMGestureLockViewItem *aview in self.lockViews) {
+    for (CYGestureLockViewItem *aview in self.lockViews) {
         string = [string stringByAppendingString:aview.number];
     }
     NSLog(@"%@ ",string);
@@ -438,6 +438,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
         [USERDEFAULT setObject:password forKey:UDKey_GesturePassword];
 
     }
+    [USERDEFAULT setObject:@"YES" forKey:UDKey_DefaultGesturePasswordExistValue];
 }
 
 - (NSString *) getPassword
@@ -454,16 +455,16 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 }
 
 #pragma mark- 解锁
-- (void) setPassword:(CMGestureLockSettingStep)step
+- (void) setPassword:(CYGestureLockSettingStep)step
 {
     self.settingStep = step;
     switch (step) {
-        case CMGestureLockSettingStepZero:
+        case CYGestureLockSettingStepZero:
         {
             [self setShowSubTitle:StartDraw];
         }
             break;
-        case CMGestureLockSettingStepFirst:
+        case CYGestureLockSettingStepFirst:
         {
             [self setShowSubTitle:SecondDraw];
             self.firstPassword = [self getCurrentPasswordString];
@@ -471,7 +472,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
         }
             break;
             
-        case CMGestureLockSettingStepSecond:{
+        case CYGestureLockSettingStepSecond:{
             NSString *secondString = [self getCurrentPasswordString];
             if ([self.firstPassword isEqualToString:secondString]) {
                 [self setShowSubTitle:CompleteDraw];
@@ -481,7 +482,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
                 
             } else {
                 [self setShowSubTitle:Inconsisterncy];
-                self.settingStep = CMGestureLockSettingStepFirst;
+                self.settingStep = CYGestureLockSettingStepFirst;
                 [[NSNotificationCenter defaultCenter]postNotificationName:CanResetNotice object:nil];
             }
         }
@@ -491,10 +492,10 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     }
 }
 
-- (void) unLockPassword:(CMGestureLockUnLockStep)step
+- (void) unLockPassword:(CYGestureLockUnLockStep)step
 {
     switch (step) {
-        case CMGestureLockUnLockStepFirst:
+        case CYGestureLockUnLockStepFirst:
         {
             self.showAvatar.transform = CGAffineTransformIdentity;
             self.showAvatar.transform = CGAffineTransformScale(self.showSubTitleLabel.transform, 1.2, 1.2);
@@ -502,7 +503,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
             NSLog(@"开始解锁");
         }
             break;
-        case CMGestureLockUnLockStepSecond:{
+        case CYGestureLockUnLockStepSecond:{
             if ([self isPassWordCorrect]) {
                 _mistakes = -1;
                 [self saveMistakeNumber];
@@ -512,7 +513,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
             } else {
                 NSLog(@"解锁失败");
                 [self addAnimationForShowAvatar];
-                [self wrongDrawed:CMGestureLockDrawWrongTypePassword];
+                [self wrongDrawed:CYGestureLockDrawWrongTypePassword];
             }
         }
             break;
@@ -522,17 +523,17 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     
 }
 
-- (void) modifyPassword:(CMGestureLockModifyStep)step
+- (void) modifyPassword:(CYGestureLockModifyStep)step
 {
     switch (step) {
-        case CMGestureLockModifyStepUnlock:{
+        case CYGestureLockModifyStepUnlock:{
             [self setShowSubTitle:@"请绘制旧手势"];
         }
             break;
-        case CMGestureLockModifyStepSetting:
+        case CYGestureLockModifyStepSetting:
         {
-            _lockType = CMGestureLockViewTypeSetting;
-            [self setPassword:CMGestureLockSettingStepZero];
+            _lockType = CYGestureLockViewTypeSetting;
+            [self setPassword:CYGestureLockSettingStepZero];
         }
             break;
         default:
@@ -541,16 +542,16 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     
 }
 
-- (void) clearPassword:(CMGestureLockClearStep)step
+- (void) clearPassword:(CYGestureLockClearStep)step
 {
     switch (step) {
-        case CMGestureLockClearStepUnlcok:
+        case CYGestureLockClearStepUnlcok:
         {
             [self setShowSubTitle:ModifyDraw];
         }
             break;
-        case CMGestureLockClearStepClear:{
-            [USERDEFAULT removeObjectForKey:UDKey_GesturePassword];
+        case CYGestureLockClearStepClear:{
+            [[self class] deletePassword];
             [self setShowSubTitle:@"清除密码成功"];
             [self doSuccessBlock];
         }
@@ -563,7 +564,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 #pragma mark- 辅助方法
 - (NSUInteger) getMistakeNumber
 {
-    NSUInteger mistakesTime = [[USERDEFAULT objectForKey:USERTRYCOUNTKEY] integerValue];
+    NSUInteger mistakesTime = [[USERDEFAULT objectForKey:UDKey_USERTRYCOUNTKEY] integerValue];
     if (mistakesTime <= 0) {
         mistakesTime = 1;
     }
@@ -572,7 +573,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 
 - (void) saveMistakeNumber
 {
-    [USERDEFAULT setObject:@(_mistakes + 1) forKey:USERTRYCOUNTKEY];
+    [USERDEFAULT setObject:@(_mistakes + 1) forKey:UDKey_USERTRYCOUNTKEY];
 }
 
 - (BOOL) isPassWordCorrect
@@ -589,8 +590,8 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     NSUInteger count = self.lockViews.count;
     
     if(self.lockViews ==nil || count<=1) return;
-    CMGestureLockViewItem *item_1 = self.lockViews.lastObject;
-    CMGestureLockViewItem *item_2 =self.lockViews[count -2];
+    CYGestureLockViewItem *item_1 = self.lockViews.lastObject;
+    CYGestureLockViewItem *item_2 =self.lockViews[count -2];
     
     CGFloat item_1_x = item_1.frame.origin.x;
     CGFloat item_1_y = item_1.frame.origin.y;
@@ -683,7 +684,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
     }
 }
 
-- (void) setLockType:(CMGestureLockViewType)lockType
+- (void) setLockType:(CYGestureLockViewType)lockType
 {
     _lockType = lockType;
     [self buildUI];
@@ -719,7 +720,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 {
     [self setShowSubTitle:StartDraw];
     self.firstPassword = nil;
-    [self setPassword:CMGestureLockSettingStepZero];
+    [self setPassword:CYGestureLockSettingStepZero];
 }
 
 + (void) setShowSubTitle:(NSString *)showSubTitle
@@ -730,7 +731,7 @@ typedef NS_ENUM(NSUInteger, CMGestureLockUnLockStep) {
 + (void) deletePassword
 {
     [USERDEFAULT removeObjectForKey:UDKey_GesturePassword];
-    [USERDEFAULT setObject:@"NO" forKey:UDKey_CustomGesturePasswordExistValue];
+    [USERDEFAULT setObject:@"NO" forKey:UDKey_DefaultGesturePasswordExistValue];
 }
 
 #pragma  mark- Block 回调

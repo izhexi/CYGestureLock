@@ -1,6 +1,6 @@
 //
-//  CMGestureLockViewController.h
-//  CMGestureLock
+//  CYGestureLockViewController.h
+//  CYGestureLock
 //
 //  Created by chenyun on 15/11/30.
 //  Copyright © 2015年 chenyun. All rights reserved.
@@ -13,38 +13,38 @@
 #import <UIKit/UIKit.h>
 #import "GLLockView.h"
 
-typedef NSString *(^CMGestureLockViewEncryptBlock)(NSString *);
-@interface CMGestureLockViewController : UIViewController
+typedef NSString *(^CYGestureLockViewEncryptBlock)(NSString *);
+@interface CYGestureLockViewController : UIViewController
 
 /**
  *  解锁的功能类型
  */
-@property (nonatomic, assign) CMGestureLockViewType lockType;
+@property (nonatomic, assign) CYGestureLockViewType lockType;
 
 /**
  *  成功回调
  */
-@property (nonatomic, copy) CMGestureLockViewBlock unLockSuccessBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock unLockSuccessBlock;
 
 /**
  *  超过最大错误次数回调
  */
-@property (nonatomic, copy) CMGestureLockViewBlock maxWrongBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock maxWrongBlock;
 
 /**
  *  忘记密码回调
  */
-@property (nonatomic, copy) CMGestureLockViewBlock forgotPasswordBlock;
+@property (nonatomic, copy) CYGestureLockViewBlock forgotPasswordBlock;
 
 /**
  *  加密方式，为空默认不加密存储
  */
-@property (nonatomic, copy) CMGestureLockViewEncryptBlock encryptBlock;
+@property (nonatomic, copy) CYGestureLockViewEncryptBlock encryptBlock;
 
 /**
  *  解密回调，为空默认不解密
  */
-@property (nonatomic, copy) CMGestureLockViewEncryptBlock decryptBlock;
+@property (nonatomic, copy) CYGestureLockViewEncryptBlock decryptBlock;
 
 /**
  *  在 present 呈现方式下，是否显示返回按钮
@@ -58,7 +58,7 @@ typedef NSString *(^CMGestureLockViewEncryptBlock)(NSString *);
  *
  *  @return
  */
-+ (instancetype) LockViewControllerWithType:(CMGestureLockViewType)lockType;
++ (instancetype) LockViewControllerWithType:(CYGestureLockViewType)lockType;
 
 /**
  *  是否存在自定义key的手势密码(卡包)
