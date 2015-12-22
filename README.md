@@ -1,6 +1,10 @@
-# CYGestureLock 简单的手势解锁
-用CG画的手势密码。
-使用简单。
+### CYGestureLock 
+####做什么
+用CG画的手势密码，用于手势解锁。支持指纹解锁。
+#### 使用姿势
+使用时，自己建个类，用于管理通用的配置等。参照源码的CYGestureLockManager类。
+CYGestureLockManager的两个方法，使用简单。
+``` objc
 /**
  *  用在有返回按钮的情况，进行手势密码的设置，解锁、修改，删除，以push 方式呈现
  *
@@ -21,3 +25,5 @@
  *  @param unLockSuccessBlock
  */
 + (void)presentLockControllerFrom:(UIViewController *)controller typed:(CYGestureLockViewType)lockType animted:(BOOL)animated showBack:(BOOL)showBack successBlock:(CYGestureLockViewBlock)unLockSuccessBlock;
+
+```
